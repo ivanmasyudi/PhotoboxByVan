@@ -442,55 +442,53 @@
             vertical-align: baseline;
         }
 
-        /* ================= WATERCOLOR PINK-WHITE SPLASH SCREEN ================= */
+        /* ================= WATERCOLOR PINK-WHITE SPLASH SCREEN (60FPS GPU COMPOSITED) ================= */
         .splash-watercolor-bg {
             background-color: #fffafb;
             background-image:
-                radial-gradient(circle at 18% 22%, rgba(251, 207, 218, 0.85) 0%, rgba(251, 207, 218, 0.25) 34%, transparent 62%),
-                radial-gradient(circle at 82% 26%, rgba(255, 228, 235, 0.9) 0%, rgba(248, 198, 210, 0.3) 38%, transparent 65%),
-                radial-gradient(circle at 26% 78%, rgba(246, 196, 209, 0.78) 0%, rgba(255, 240, 244, 0.35) 42%, transparent 68%),
-                radial-gradient(circle at 78% 76%, rgba(252, 212, 222, 0.82) 0%, rgba(255, 250, 251, 0.4) 40%, transparent 66%),
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.96) 0%, rgba(253, 232, 237, 0.55) 55%, rgba(247, 214, 222, 0.4) 100%),
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='wcNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23wcNoise)' opacity='0.06'/%3E%3C/svg%3E");
-            transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+                radial-gradient(circle at 18% 22%, rgba(251, 207, 218, 0.88) 0%, rgba(251, 207, 218, 0.28) 36%, transparent 64%),
+                radial-gradient(circle at 82% 26%, rgba(255, 228, 235, 0.92) 0%, rgba(248, 198, 210, 0.32) 40%, transparent 66%),
+                radial-gradient(circle at 24% 78%, rgba(246, 196, 209, 0.82) 0%, rgba(255, 240, 244, 0.35) 42%, transparent 68%),
+                radial-gradient(circle at 78% 76%, rgba(252, 212, 222, 0.85) 0%, rgba(255, 250, 251, 0.4) 40%, transparent 66%),
+                radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.98) 0%, rgba(253, 232, 237, 0.58) 55%, rgba(247, 214, 222, 0.42) 100%);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            transition: opacity 0.65s cubic-bezier(0.33, 1, 0.68, 1), transform 0.65s cubic-bezier(0.33, 1, 0.68, 1);
         }
 
         @keyframes splashBloom {
             0% {
                 opacity: 0;
-                transform: scale(0.84) translateY(14px);
-                filter: blur(6px);
+                transform: translate3d(0, 12px, 0) scale(0.92);
             }
             100% {
                 opacity: 1;
-                transform: scale(1) translateY(0);
-                filter: blur(0px);
+                transform: translate3d(0, 0, 0) scale(1);
             }
         }
 
-        /* Letter-by-letter calligraphy ink animation for "Special for you" */
+        /* Letter-by-letter calligraphy ink animation (Pure transform+opacity, NO filter:blur so 60fps!) */
         @keyframes splashCharWrite {
             0% {
                 opacity: 0;
-                transform: translateY(16px) scale(0.65) rotate(-8deg);
-                filter: blur(4px);
+                transform: translate3d(0, 14px, 0) scale(0.75) rotate(-6deg);
             }
             70% {
                 opacity: 1;
-                transform: translateY(-2px) scale(1.04) rotate(1deg);
-                filter: blur(0px);
+                transform: translate3d(0, -1.5px, 0) scale(1.03) rotate(1deg);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1) rotate(0deg);
-                filter: blur(0px);
+                transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
             }
         }
 
         .splash-char {
             display: inline-block;
             opacity: 0;
-            animation: splashCharWrite 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            will-change: transform, opacity;
+            animation: splashCharWrite 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         /* Graceful flourish underline that draws across after the text is written */
@@ -508,18 +506,31 @@
         .splash-flourish-path {
             stroke-dasharray: 260;
             stroke-dashoffset: 260;
-            animation: drawFlourishLine 1.1s cubic-bezier(0.4, 0, 0.2, 1) 1.65s forwards;
+            animation: drawFlourishLine 1.0s cubic-bezier(0.4, 0, 0.2, 1) 1.5s forwards;
         }
 
         .splash-sub-reveal {
             opacity: 0;
-            animation: splashBloom 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.95s forwards;
+            will-change: transform, opacity;
+            animation: splashBloom 0.75s cubic-bezier(0.22, 1, 0.36, 1) 1.75s forwards;
         }
 
         .splash-hide {
             opacity: 0 !important;
-            transform: scale(1.06) !important;
+            transform: translate3d(0, -8px, 0) scale(1.03) !important;
             pointer-events: none !important;
+        }
+
+        /* Main Photobox Smooth Reveal */
+        #mainPhotoboxContainer {
+            opacity: 0;
+            transform: translate3d(0, 14px, 0);
+            will-change: opacity, transform;
+            transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #mainPhotoboxContainer.photobox-visible {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
         }
     </style>
 </head>
@@ -530,19 +541,15 @@
          onclick="dismissSplashScreen()"
          class="splash-watercolor-bg fixed inset-0 z-[120] flex flex-col items-center justify-center px-6 text-center cursor-pointer select-none overflow-hidden">
         
-        <!-- Soft Organic Watercolor Paint Blobs (SVG Background Accents) -->
-        <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-65" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice">
-            <defs>
-                <filter id="watercolorBlur" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="28" />
-                </filter>
-            </defs>
-            <circle cx="85" cy="140" r="115" fill="#f7c6d3" filter="url(#watercolorBlur)" />
-            <circle cx="325" cy="185" r="95" fill="#fde2e8" filter="url(#watercolorBlur)" />
-            <circle cx="200" cy="340" r="135" fill="#ffffff" filter="url(#watercolorBlur)" />
-            <circle cx="95" cy="540" r="110" fill="#f4b8c7" filter="url(#watercolorBlur)" />
-            <circle cx="315" cy="520" r="120" fill="#fae0e6" filter="url(#watercolorBlur)" />
-        </svg>
+        <!-- Soft Organic Watercolor Paint Blobs (Pure Radial Gradients - Zero GPU Blur Lag!) -->
+        <div class="absolute inset-0 pointer-events-none opacity-80"
+             style="background:
+                radial-gradient(circle 180px at 22% 20%, rgba(247, 198, 211, 0.72), transparent 100%),
+                radial-gradient(circle 160px at 80% 26%, rgba(253, 222, 230, 0.8), transparent 100%),
+                radial-gradient(circle 220px at 50% 48%, rgba(255, 255, 255, 0.92), transparent 100%),
+                radial-gradient(circle 175px at 24% 76%, rgba(244, 184, 199, 0.65), transparent 100%),
+                radial-gradient(circle 190px at 78% 74%, rgba(250, 216, 225, 0.72), transparent 100%);">
+        </div>
 
         <!-- Hovering Watercolor Butterfly on Splash Screen -->
         <div class="butterfly-stage relative z-10 w-16 h-16 sm:w-20 sm:h-20 mb-2"
@@ -807,7 +814,7 @@
     </div>
 
     <!-- ================= MAIN PHOTOBOX CONTAINER ================= -->
-    <main class="w-full max-w-md mx-auto flex flex-col items-center relative z-20 pt-3 pb-20">
+    <main id="mainPhotoboxContainer" class="w-full max-w-md mx-auto flex flex-col items-center relative z-20 pt-3 pb-20">
 
         <!-- Handwritten Calligraphy Title -->
         <h1 id="moodTitle"
@@ -1139,17 +1146,22 @@
                 return;
             }
 
-            // 2. Check if short cloud ID (?k=xxx) exists in URL
+            // 2. Check if short cloud ID (?k=xxx) exists in URL (Supports dpaste 9-char ID & jsonblob fallback)
             const shortKey = params.get('k');
             if (shortKey) {
                 isRecipientGiftMode = true;
                 try {
-                    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${encodeURIComponent(shortKey)}`, {
-                        headers: { 'Accept': 'application/json' }
-                    });
+                    const cloudUrl = shortKey.length <= 12
+                        ? `https://dpaste.com/${encodeURIComponent(shortKey)}.txt`
+                        : `https://jsonblob.com/api/jsonBlob/${encodeURIComponent(shortKey)}`;
+                    const res = await fetch(cloudUrl);
                     if (res.ok) {
                         const cloudData = await res.json();
-                        appConfig = Object.assign({}, DEFAULT_CONFIG, cloudData);
+                        if (cloudData.photos) {
+                            appConfig = Object.assign({}, DEFAULT_CONFIG, cloudData);
+                        } else {
+                            applyDeltaConfig(cloudData);
+                        }
                         return;
                     }
                 } catch (e) {
@@ -1406,23 +1418,13 @@
                 const now = audioCtx.currentTime;
                 const durSec = durationMs / 1000;
 
-                // 1. Paper friction "Sreeetttt" layer (Bandpass-filtered white/pink noise with rapid thermal line modulation)
-                const bufferSize = Math.floor(audioCtx.sampleRate * durSec);
-                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-
-                // Create textured thermal paper noise (modulated at ~55Hz like rapid thermal scanlines)
-                for (let i = 0; i < bufferSize; i++) {
-                    const t = i / audioCtx.sampleRate;
-                    // Smooth speed curve matching cubic-bezier slide (fast start, gentler end)
-                    const speedFactor = 1.0 - 0.35 * (t / durSec);
-                    const lineMod = 0.55 + 0.45 * Math.sin(2 * Math.PI * (58 * speedFactor) * t);
-                    const microGrain = (Math.random() * 2 - 1);
-                    output[i] = microGrain * lineMod;
+                // 1. Paper friction "Sreeetttt" layer (Uses pre-computed buffer for ZERO CPU spike during slide!)
+                if (!prebuiltThermalBuffer) {
+                    prepareThermalAudioBuffer();
                 }
 
                 const whiteNoise = audioCtx.createBufferSource();
-                whiteNoise.buffer = noiseBuffer;
+                whiteNoise.buffer = prebuiltThermalBuffer;
 
                 // Bandpass filter focused on crisp paper sliding / thermal head friction (1400 Hz - 2400 Hz)
                 const bandpass = audioCtx.createBiquadFilter();
@@ -1905,7 +1907,7 @@
             restartPrintStrip();
         }
 
-        // Option 1: Copy Short Shareable Link (Creates a clean short URL!)
+        // Option 1: Copy Short Shareable Link (NEVER downloads a file; always produces a short link!)
         async function copyShareableGiftLink() {
             collectModalSettings();
             renderStripItems();
@@ -1919,53 +1921,43 @@
 
             const baseUrl = window.location.href.split('?')[0].split('#')[0];
             let finalShareUrl = '';
+            const delta = buildDeltaConfig();
 
-            try {
-                // 1. Try storing config in a short cloud ID so the link is super short (?k=xxx) even with custom photos!
-                const res = await fetch('https://jsonblob.com/api/jsonBlob', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(appConfig)
-                });
+            // If nothing was customized from default, the shortest link is simply ?kado=1
+            if (Object.keys(delta).length === 0) {
+                finalShareUrl = `${baseUrl}?kado=1`;
+            } else {
+                // 1. Store config in dpaste CORS Cloud API -> returns a super short 9-character ID (e.g., ?k=F6QN9KF8U)
+                // Works even when user uploads custom photos from their phone/laptop!
+                try {
+                    const formBody = new URLSearchParams();
+                    formBody.append('content', JSON.stringify(delta));
+                    formBody.append('syntax', 'json');
+                    formBody.append('expiry_days', '365');
 
-                if (res.ok) {
-                    const loc = res.headers.get('Location') || res.headers.get('location') || '';
-                    const id = loc.split('/').pop();
-                    if (id) {
-                        finalShareUrl = `${baseUrl}?k=${id}`;
+                    const res = await fetch('https://dpaste.com/api/v2/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: formBody.toString()
+                    });
+
+                    if (res.ok) {
+                        const pastedUrl = (await res.text()).trim();
+                        const shortId = pastedUrl.replace(/\/+$/, '').split('/').pop();
+                        if (shortId && shortId.length <= 14) {
+                            finalShareUrl = `${baseUrl}?k=${shortId}`;
+                        }
                     }
-                }
-            } catch (e) {}
-
-            // 2. Fallback if offline or local file: build ultra-compact Delta URL
-            if (!finalShareUrl) {
-                const hasBase64Photo = appConfig.photos.slice(0, appConfig.photoCount).some(p => p.src.startsWith('data:'));
-                if (hasBase64Photo) {
-                    if (btn) { btn.disabled = false; btn.innerHTML = origText; }
-                    exportCleanGiftHtml();
-                    return;
+                } catch (e) {
+                    console.warn('Cloud short link fallback:', e);
                 }
 
-                const delta = buildDeltaConfig();
-                if (Object.keys(delta).length === 0) {
-                    finalShareUrl = `${baseUrl}?kado=1`;
-                } else {
+                // 2. Fallback if offline: use compact #g= hash (and never trigger file download!)
+                if (!finalShareUrl) {
                     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(delta))));
                     finalShareUrl = `${baseUrl}?kado=1#g=${encoded}`;
-                }
-
-                // Also try shortening via is.gd if it's a public http/https URL
-                if (finalShareUrl.startsWith('http') && !finalShareUrl.includes('localhost') && !finalShareUrl.includes('127.0.0.1')) {
-                    try {
-                        const shortRes = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(finalShareUrl)}`);
-                        if (shortRes.ok) {
-                            const data = await shortRes.json();
-                            if (data && data.shorturl) finalShareUrl = data.shorturl;
-                        }
-                    } catch (e) {}
                 }
             }
 
@@ -1978,6 +1970,7 @@
                 closeSettingsModal();
                 showToast('🔗 Link Pendek berhasil disalin! Siap dikirim ke dia 💖');
             }).catch(() => {
+                closeSettingsModal();
                 prompt('Salin link pendek ini untuk dikirim ke dia:', finalShareUrl);
             });
         }
@@ -2077,6 +2070,26 @@
 
         let splashDismissed = false;
         let splashAutoTimer = null;
+        let prebuiltThermalBuffer = null;
+
+        // Pre-compute the thermal noise audio buffer during idle time so printing starts with ZERO lag!
+        function prepareThermalAudioBuffer() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const durSec = 2.1;
+                const bufferSize = Math.floor(audioCtx.sampleRate * durSec);
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+
+                for (let i = 0; i < bufferSize; i++) {
+                    const t = i / audioCtx.sampleRate;
+                    const speedFactor = 1.0 - 0.35 * (t / durSec);
+                    const lineMod = 0.55 + 0.45 * Math.sin(2 * Math.PI * (58 * speedFactor) * t);
+                    output[i] = (Math.random() * 2 - 1) * lineMod;
+                }
+                prebuiltThermalBuffer = noiseBuffer;
+            } catch (e) {}
+        }
 
         function dismissSplashScreen() {
             if (splashDismissed) return;
@@ -2087,25 +2100,29 @@
                 splashAutoTimer = null;
             }
 
-            // Unlock Web Audio Context on user gesture so the "sreeettttt" sound works even on strict mobile browsers!
+            // Unlock Web Audio Context if already created
             try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
             } catch (e) {}
 
             const splash = document.getElementById('splashScreen');
-            if (splash) {
-                splash.classList.add('splash-hide');
-                spawnButterflyBurst({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 850);
-            }
+            const mainBox = document.getElementById('mainPhotoboxContainer');
 
-            // Start printing the photobox strip right as the splash screen fades out
-            setTimeout(() => {
-                runStagedSlotPrint();
-            }, 380);
+            // Use double requestAnimationFrame so the GPU cross-fade between Splash and Photobox is 100% butter-smooth!
+            requestAnimationFrame(() => {
+                if (mainBox) mainBox.classList.add('photobox-visible');
+                if (splash) splash.classList.add('splash-hide');
+
+                // Remove splash from DOM only AFTER its 650ms opacity fade finishes
+                setTimeout(() => {
+                    if (splash) splash.style.display = 'none';
+                }, 660);
+
+                // Start the slot printing smoothly right after the cross-fade settles
+                setTimeout(() => {
+                    runStagedSlotPrint();
+                }, 520);
+            });
         }
 
         function animateSplashHeading() {
@@ -2134,6 +2151,9 @@
             renderStripItems();
             animateSplashHeading();
 
+            // Pre-build thermal sound buffer while user watches the splash screen
+            setTimeout(prepareThermalAudioBuffer, 120);
+
             // Update recipient subtitle on the Splash Screen
             const splashSub = document.getElementById('splashRecipientText');
             if (splashSub && appConfig.recipient) {
@@ -2143,7 +2163,7 @@
             // Automatically transition from Splash Screen right after the "Special for you" writing animation finishes!
             splashAutoTimer = setTimeout(() => {
                 dismissSplashScreen();
-            }, 3100);
+            }, 2850);
         };
     </script>
 </body>

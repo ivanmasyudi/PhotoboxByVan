@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Mood - Photobox & Love Receipt</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700&family=Sacramento&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper-bg: #f6e6e8;
+            --doodle-red: #9e3547;
+            --doodle-soft: #e598a6;
+            --ink-dark: #381820;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--ink-dark);
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Realistic Felt / Cotton Scrapbook Paper Texture (Soft Blush Pink) */
+        .scrapbook-bg {
+            background-color: #f7e7e9;
+            background-image: 
+                radial-gradient(at 15% 20%, rgba(255, 224, 230, 0.75) 0px, transparent 50%),
+                radial-gradient(at 85% 75%, rgba(242, 198, 208, 0.6) 0px, transparent 55%),
+                radial-gradient(at 50% 40%, rgba(255, 245, 247, 0.85) 0px, transparent 60%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)' opacity='0.075'/%3E%3C/svg%3E");
+        }
+
+        .font-script {
+            font-family: 'Sacramento', cursive;
+        }
+
+        .font-hand {
+            font-family: 'Caveat', cursive;
+        }
+
+        .font-receipt {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* ================= 3D SLOT HOUSING (UNIFIED SINGLE BOX) ================= */
+        .slot-housing {
+            background: linear-gradient(180deg, #ffffff 0%, #f5ecee 62%, #e6d7da 100%);
+            border-radius: 14px;
+            box-shadow: 
+                0 10px 24px -4px rgba(110, 38, 52, 0.16),
+                0 3px 6px -1px rgba(110, 38, 52, 0.08),
+                inset 0 2px 2px rgba(255, 255, 255, 0.95),
+                inset 0 -2px 3px rgba(140, 60, 75, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+        }
+
+        /* Dark Inner Slot Opening */
+        .slot-opening {
+            background: #1a0d10;
+            box-shadow: 
+                inset 0 4px 7px rgba(0, 0, 0, 0.96),
+                0 1px 1px rgba(255, 255, 255, 0.85);
+            border-radius: 999px;
+            position: relative;
+        }
+
+        /* Upper lip cap (z-35) that covers ONLY the top half of the black slot,
+           so the emerging paper (z-25) comes straight out of the middle of the black hole
+           and flows OVER the bottom white housing rim! */
+        .slot-top-lip-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 7px;
+            background: #1a0d10;
+            border-radius: 999px 999px 0 0;
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.95);
+            z-index: 35;
+            pointer-events: none;
+        }
+
+        /* ================= CONTINUOUS PAPER VIEWPORT (ANCHORED IN BLACK SLOT) ================= */
+        #paper-viewport {
+            overflow: hidden;
+            width: 100%;
+            /* Pulls the top of the viewport right into the center of the black slot */
+            margin-top: -21px;
+            padding-top: 0px;
+            padding-bottom: 38px;
+            position: relative;
+            z-index: 25; /* Higher than .slot-housing (z-15), lower than .slot-top-lip-mask (z-35) */
+            pointer-events: none;
+        }
+
+        /* Realistic shadow cast from the black slot onto the emerging paper */
+        .slot-lip-shadow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 215px;
+            height: 15px;
+            background: linear-gradient(180deg, rgba(16, 5, 8, 0.82) 0%, rgba(24, 10, 14, 0.28) 55%, transparent 100%);
+            z-index: 30;
+            pointer-events: none;
+        }
+        @media (min-width: 640px) {
+            .slot-lip-shadow {
+                width: 230px;
+            }
+        }
+
+        #receipt-strip {
+            pointer-events: auto;
+            transform: translateY(-102%);
+            will-change: transform;
+        }
+
+        /* ================= POSTAGE STAMP & THERMAL RECEIPT CARDS ================= */
+        .stamp-card {
+            position: relative;
+            background: #ffffff;
+            padding: 13px;
+            --r: 5.5px;
+            --s: 16px;
+            filter: drop-shadow(0 8px 16px rgba(115, 36, 52, 0.13));
+        }
+
+        /* Top & Bottom Perforated Stamp Teeth */
+        .stamp-card::before,
+        .stamp-card::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background-size: 16px 8px;
+            background-repeat: repeat-x;
+            pointer-events: none;
+        }
+
+        .stamp-card::before {
+            top: -7px;
+            background-image: radial-gradient(circle at 8px 0px, transparent 4.8px, #ffffff 5.3px);
+        }
+
+        .stamp-card::after {
+            bottom: -7px;
+            background-image: radial-gradient(circle at 8px 8px, transparent 4.8px, #ffffff 5.3px);
+        }
+
+        /* Left & Right Perforated Stamp Teeth */
+        .stamp-inner-sides {
+            position: relative;
+            background: #ffffff;
+        }
+
+        .stamp-inner-sides::before,
+        .stamp-inner-sides::after {
+            content: "";
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            width: 8px;
+            background-size: 8px 16px;
+            background-repeat: repeat-y;
+            pointer-events: none;
+        }
+
+        .stamp-inner-sides::before {
+            left: -20px;
+            background-image: radial-gradient(circle at 0px 8px, transparent 4.8px, #ffffff 5.3px);
+        }
+
+        .stamp-inner-sides::after {
+            right: -20px;
+            background-image: radial-gradient(circle at 8px 8px, transparent 4.8px, #ffffff 5.3px);
+        }
+
+        /* Thermal Love Receipt Paper with Zig-Zag Torn Edges */
+        .love-receipt-card {
+            background: #fffdfd;
+            position: relative;
+            filter: drop-shadow(0 10px 18px rgba(115, 36, 52, 0.14));
+        }
+
+        .love-receipt-card::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: 
+                linear-gradient(135deg, transparent 6px, #fffdfd 0), 
+                linear-gradient(-135deg, transparent 6px, #fffdfd 0);
+            background-repeat: repeat-x;
+            background-size: 12px 8px;
+        }
+
+        .love-receipt-card::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: 
+                linear-gradient(-45deg, transparent 7px, #fffdfd 0), 
+                linear-gradient(45deg, transparent 7px, #fffdfd 0);
+            background-repeat: repeat-x;
+            background-size: 14px 10px;
+        }
+
+        /* Subtle thermal motor vibration while actively sliding */
+        @keyframes motorPulse {
+            0%, 100% { margin-left: 0px; }
+            50% { margin-left: 0.7px; }
+        }
+
+        .motor-active {
+            animation: motorPulse 0.09s infinite;
+        }
+
+        /* Doodle Sticker Hover & Float */
+        .doodle-item {
+            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+        .doodle-item:hover {
+            transform: scale(1.13) rotate(5deg);
+        }
+        .doodle-item:active {
+            transform: scale(0.92);
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(2.5deg); }
+        }
+        .float-slow {
+            animation: gentleFloat 4.2s ease-in-out infinite;
+        }
+        .float-delayed {
+            animation: gentleFloat 4.8s ease-in-out 1.6s infinite;
+        }
+
+        /* Floating Heart/Sparkle Particle */
+        @keyframes floatUpFade {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.6) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-60px) scale(1.25) rotate(14deg);
+            }
+        }
+        .love-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            animation: floatUpFade 0.95s ease-out forwards;
+        }
+
+        /* Custom Scrollbar for Settings Modal */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #fdf2f4;
+            border-radius: 99px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #e598a6;
+            border-radius: 99px;
+        }
+
+        /* Photo Lightbox Zoom Animation */
+        @keyframes zoomPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.75) translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .zoom-card-animate {
+            animation: zoomPopIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* ================= 3D WATERCOLOR BUTTERFLY ANIMATIONS ================= */
+        .butterfly-stage {
+            perspective: 700px;
+            transform-style: preserve-3d;
+        }
+
+        .butterfly-3d {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(28deg) rotateZ(-18deg);
+            filter: drop-shadow(0 8px 10px rgba(95, 42, 54, 0.16));
+        }
+
+        .bf-wing-left {
+            transform-origin: 50% 50%;
+            animation: flapLeftWing var(--flap-speed, 0.42s) ease-in-out infinite alternate;
+        }
+
+        .bf-wing-right {
+            transform-origin: 50% 50%;
+            animation: flapRightWing var(--flap-speed, 0.42s) ease-in-out infinite alternate;
+        }
+
+        @keyframes flapLeftWing {
+            0% { transform: rotateY(10deg) rotateZ(-3deg) scaleX(0.98); }
+            100% { transform: rotateY(68deg) rotateZ(4deg) scaleX(0.86); }
+        }
+
+        @keyframes flapRightWing {
+            0% { transform: rotateY(-10deg) rotateZ(3deg) scaleX(0.98); }
+            100% { transform: rotateY(-68deg) rotateZ(-4deg) scaleX(0.86); }
+        }
+
+        /* Flight Path 1: Sweeps gently from bottom-left up toward top-right */
+        @keyframes butterflyFlight1 {
+            0% {
+                transform: translate3d(-12vw, 82vh, 0) rotate(28deg) scale(0.82);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.95;
+            }
+            35% {
+                transform: translate3d(22vw, 54vh, 20px) rotate(12deg) scale(0.96);
+            }
+            65% {
+                transform: translate3d(62vw, 28vh, -10px) rotate(32deg) scale(1.02);
+            }
+            90% {
+                opacity: 0.95;
+            }
+            100% {
+                transform: translate3d(108vw, 6vh, 0) rotate(18deg) scale(0.85);
+                opacity: 0;
+            }
+        }
+
+        /* Flight Path 2: Drifts from top-right across middle to lower-left */
+        @keyframes butterflyFlight2 {
+            0% {
+                transform: translate3d(106vw, 18vh, 0) rotate(-135deg) scale(0.75);
+                opacity: 0;
+            }
+            12% {
+                opacity: 0.92;
+            }
+            45% {
+                transform: translate3d(64vw, 44vh, 15px) rotate(-118deg) scale(0.92);
+            }
+            75% {
+                transform: translate3d(24vw, 62vh, -10px) rotate(-142deg) scale(0.86);
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate3d(-14vw, 76vh, 0) rotate(-125deg) scale(0.75);
+                opacity: 0;
+            }
+        }
+
+        /* Flight Path 3: Gentle hovering figure-eight near the photobox header & slot */
+        @keyframes butterflyHoverLoop {
+            0%, 100% {
+                transform: translate3d(0px, 0px, 0) rotate(-14deg) scale(0.88);
+            }
+            25% {
+                transform: translate3d(28px, -18px, 12px) rotate(8deg) scale(0.95);
+            }
+            50% {
+                transform: translate3d(8px, -34px, 0) rotate(-22deg) scale(0.9);
+            }
+            75% {
+                transform: translate3d(-22px, -14px, 10px) rotate(12deg) scale(0.94);
+            }
+        }
+
+        /* Burst flight when user clicks a butterfly or finishes printing */
+        @keyframes butterflyBurstFly {
+            0% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) rotate(var(--burst-rot, 15deg)) scale(0.55);
+            }
+            65% {
+                opacity: 0.95;
+                transform: translate3d(var(--tx-mid, 40px), var(--ty-mid, -75px), 20px) rotate(calc(var(--burst-rot, 15deg) + 18deg)) scale(0.95);
+            }
+            100% {
+                opacity: 0;
+                transform: translate3d(var(--tx-end, 85px), var(--ty-end, -155px), 0) rotate(calc(var(--burst-rot, 15deg) - 12deg)) scale(0.7);
+            }
+        }
+
+        /* ================= HANDWRITTEN RECEIPT LETTER ZOOM STYLES ================= */
+        .lined-letter-paper {
+            background-color: #fffafb;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 31px,
+                rgba(229, 152, 166, 0.32) 31px,
+                rgba(229, 152, 166, 0.32) 32px
+            );
+            line-height: 32px;
+        }
+
+        @keyframes pencilWriteWiggle {
+            0%, 100% { transform: translate(0, 0) rotate(-18deg); }
+            25% { transform: translate(1.5px, -2px) rotate(-12deg); }
+            50% { transform: translate(-1px, -1px) rotate(-22deg); }
+            75% { transform: translate(2px, -3px) rotate(-14deg); }
+        }
+
+        .pencil-cursor {
+            display: inline-block;
+            margin-left: 3px;
+            font-size: 1.15rem;
+            animation: pencilWriteWiggle 0.14s infinite;
+            vertical-align: baseline;
+        }
+
+        /* ================= WATERCOLOR PINK-WHITE SPLASH SCREEN ================= */
+        .splash-watercolor-bg {
+            background-color: #fffafb;
+            background-image:
+                radial-gradient(circle at 18% 22%, rgba(251, 207, 218, 0.85) 0%, rgba(251, 207, 218, 0.25) 34%, transparent 62%),
+                radial-gradient(circle at 82% 26%, rgba(255, 228, 235, 0.9) 0%, rgba(248, 198, 210, 0.3) 38%, transparent 65%),
+                radial-gradient(circle at 26% 78%, rgba(246, 196, 209, 0.78) 0%, rgba(255, 240, 244, 0.35) 42%, transparent 68%),
+                radial-gradient(circle at 78% 76%, rgba(252, 212, 222, 0.82) 0%, rgba(255, 250, 251, 0.4) 40%, transparent 66%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.96) 0%, rgba(253, 232, 237, 0.55) 55%, rgba(247, 214, 222, 0.4) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='wcNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23wcNoise)' opacity='0.06'/%3E%3C/svg%3E");
+            transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes splashBloom {
+            0% {
+                opacity: 0;
+                transform: scale(0.84) translateY(14px);
+                filter: blur(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+        }
+
+        /* Letter-by-letter calligraphy ink animation for "Special for you" */
+        @keyframes splashCharWrite {
+            0% {
+                opacity: 0;
+                transform: translateY(16px) scale(0.65) rotate(-8deg);
+                filter: blur(4px);
+            }
+            70% {
+                opacity: 1;
+                transform: translateY(-2px) scale(1.04) rotate(1deg);
+                filter: blur(0px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+                filter: blur(0px);
+            }
+        }
+
+        .splash-char {
+            display: inline-block;
+            opacity: 0;
+            animation: splashCharWrite 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Graceful flourish underline that draws across after the text is written */
+        @keyframes drawFlourishLine {
+            0% {
+                stroke-dashoffset: 260;
+                opacity: 0.2;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+        }
+
+        .splash-flourish-path {
+            stroke-dasharray: 260;
+            stroke-dashoffset: 260;
+            animation: drawFlourishLine 1.1s cubic-bezier(0.4, 0, 0.2, 1) 1.65s forwards;
+        }
+
+        .splash-sub-reveal {
+            opacity: 0;
+            animation: splashBloom 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.95s forwards;
+        }
+
+        .splash-hide {
+            opacity: 0 !important;
+            transform: scale(1.06) !important;
+            pointer-events: none !important;
+        }
+    </style>
+</head>
+<body class="scrapbook-bg min-h-screen relative flex flex-col items-center justify-between py-6 px-3 sm:px-6 selection:bg-pink-200 selection:text-pink-900">
+
+    <!-- ================= WATERCOLOR PINK-WHITE SPLASH SCREEN ("Special for you") ================= -->
+    <div id="splashScreen"
+         onclick="dismissSplashScreen()"
+         class="splash-watercolor-bg fixed inset-0 z-[120] flex flex-col items-center justify-center px-6 text-center cursor-pointer select-none overflow-hidden">
+        
+        <!-- Soft Organic Watercolor Paint Blobs (SVG Background Accents) -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-65" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <filter id="watercolorBlur" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="28" />
+                </filter>
+            </defs>
+            <circle cx="85" cy="140" r="115" fill="#f7c6d3" filter="url(#watercolorBlur)" />
+            <circle cx="325" cy="185" r="95" fill="#fde2e8" filter="url(#watercolorBlur)" />
+            <circle cx="200" cy="340" r="135" fill="#ffffff" filter="url(#watercolorBlur)" />
+            <circle cx="95" cy="540" r="110" fill="#f4b8c7" filter="url(#watercolorBlur)" />
+            <circle cx="315" cy="520" r="120" fill="#fae0e6" filter="url(#watercolorBlur)" />
+        </svg>
+
+        <!-- Hovering Watercolor Butterfly on Splash Screen -->
+        <div class="butterfly-stage relative z-10 w-16 h-16 sm:w-20 sm:h-20 mb-2"
+             style="animation: butterflyHoverLoop 6s ease-in-out infinite; --flap-speed: 0.34s;">
+            <div class="butterfly-3d">
+                <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                    <g class="bf-wing-left"><use href="#watercolorWingLeft"/></g>
+                    <g class="bf-wing-right"><use href="#watercolorWingRight"/></g>
+                    <use href="#watercolorButterflyBody"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- "Special for you" Animated Calligraphy Reveal (No Button, Auto-Transitions After Animation!) -->
+        <div class="relative z-10 max-w-sm mx-auto flex flex-col items-center">
+            <h2 id="splashAnimatedHeading"
+                aria-label="Special for you"
+                class="font-script text-6xl sm:text-7xl text-[#8a2438] leading-tight py-1 drop-shadow-xs tracking-normal">
+                Special for you
+            </h2>
+
+            <!-- Hand-drawn flourish curve under "Special for you" -->
+            <svg class="w-48 sm:w-56 h-6 -mt-2 text-[#c95b72]" viewBox="0 0 240 28" fill="none">
+                <path class="splash-flourish-path"
+                      d="M14 16 C65 26, 175 6, 226 15"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"/>
+            </svg>
+
+            <p id="splashRecipientText" class="splash-sub-reveal font-hand text-xl sm:text-2xl text-[#6e2332] font-bold mt-1">
+                Untuk kesayanganku ❤️
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= SCATTERED HAND-DRAWN DOODLES ================= -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden max-w-xl mx-auto z-10">
+
+        <!-- Reusable Pastel Sage-Green & Blush-Pink Watercolor Butterfly SVG Defs (Matches Uploaded Image) -->
+        <svg class="hidden" aria-hidden="true">
+            <defs>
+                <!-- Soft Watercolor Wing Gradients -->
+                <radialGradient id="bfPinkGlow" cx="55%" cy="52%" r="55%">
+                    <stop offset="0%" stop-color="#f7bbc8" stop-opacity="0.95"/>
+                    <stop offset="52%" stop-color="#efced5" stop-opacity="0.88"/>
+                    <stop offset="100%" stop-color="#c3d1ae" stop-opacity="0"/>
+                </radialGradient>
+                <linearGradient id="bfSageOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#b59469"/>
+                    <stop offset="28%" stop-color="#c4d3ae"/>
+                    <stop offset="68%" stop-color="#d5e0c3"/>
+                    <stop offset="100%" stop-color="#d99b82"/>
+                </linearGradient>
+
+                <!-- Left Forewing + Hindwing Group -->
+                <g id="watercolorWingLeft">
+                    <!-- Upper Forewing -->
+                    <path d="M50 52 C43 32, 24 12, 12 15 C4 18, 2 32, 9 45 C14 54, 29 56, 50 54 Z"
+                          fill="url(#bfSageOuter)" stroke="#7c6855" stroke-width="0.9" stroke-opacity="0.65"/>
+                    <!-- Pink inner watercolor blush on forewing -->
+                    <path d="M48 52 C40 37, 25 25, 17 29 C12 32, 14 44, 24 49 C33 53, 42 53, 48 52 Z"
+                          fill="url(#bfPinkGlow)"/>
+                    <!-- Cream/Lilac Wing Spots near tip -->
+                    <ellipse cx="14" cy="23" rx="3.5" ry="2" transform="rotate(-25 14 23)" fill="#f9f3eb" opacity="0.85"/>
+                    <ellipse cx="19" cy="29" rx="4.2" ry="2.2" transform="rotate(-20 19 29)" fill="#e5d0e3" opacity="0.82"/>
+                    <ellipse cx="13" cy="33" rx="3.2" ry="1.8" transform="rotate(-15 13 33)" fill="#dce8d0" opacity="0.85"/>
+
+                    <!-- Lower Scalloped Hindwing -->
+                    <path d="M50 54 C32 54, 15 62, 16 74 C17 83, 28 89, 38 86 C45 84, 49 70, 50 56 Z"
+                          fill="url(#bfSageOuter)" stroke="#7c6855" stroke-width="0.9" stroke-opacity="0.65"/>
+                    <!-- Pink blush on hindwing -->
+                    <path d="M48 56 C35 57, 22 64, 23 73 C24 79, 33 83, 40 79 C45 76, 47 66, 48 56 Z"
+                          fill="url(#bfPinkGlow)"/>
+                    <!-- Warm amber scalloped edge accent -->
+                    <path d="M17 73 C19 82, 29 88, 38 85" stroke="#d58b6f" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.75"/>
+                    <!-- Subtle delicate wing veins -->
+                    <path d="M49 53 C36 42, 24 34, 14 26 M49 53 C34 49, 22 46, 11 42 M49 55 C36 63, 28 71, 22 79"
+                          stroke="#6e5a4f" stroke-width="0.55" stroke-opacity="0.45" fill="none"/>
+                </g>
+
+                <!-- Right Forewing + Hindwing Group (Mirrored) -->
+                <g id="watercolorWingRight">
+                    <g transform="translate(100, 0) scale(-1, 1)">
+                        <use href="#watercolorWingLeft"/>
+                    </g>
+                </g>
+
+                <!-- Butterfly Body & Antennae -->
+                <g id="watercolorButterflyBody">
+                    <path d="M49 41 C46 34, 42 30, 39 29 M51 41 C54 34, 58 30, 61 29"
+                          stroke="#5b4d42" stroke-width="0.85" stroke-linecap="round" fill="none" opacity="0.75"/>
+                    <ellipse cx="50" cy="54" rx="2.4" ry="13" fill="#595343"/>
+                    <circle cx="50" cy="41" r="2.3" fill="#4c4637"/>
+                </g>
+            </defs>
+        </svg>
+        
+        <!-- 1. Top-Left: Tilted Takeaway Coffee Cup ("Coffee") -->
+        <div onclick="spawnParticles(event, '☕💖')" class="doodle-item float-slow pointer-events-auto absolute top-9 left-5 sm:left-9 w-12 sm:w-14 -rotate-12" title="Semangat Pagi Sayang!">
+            <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 32L27 84C27.5 88 32 90 40 90C48 90 52.5 88 53 84L58 32H22Z" fill="#fff8f9" stroke="#9e3547" stroke-width="2.6" stroke-linejoin="round"/>
+                <path d="M24 47L26 69C35 71 45 71 54 69L56 47C45 49 35 49 24 47Z" fill="#c94b61" stroke="#9e3547" stroke-width="2.2"/>
+                <text x="30" y="61" fill="#fff5f7" font-family="Sacramento, cursive" font-size="14" font-weight="bold">Coffee</text>
+                <rect x="18" y="25" width="44" height="7" rx="3" fill="#c94b61" stroke="#9e3547" stroke-width="2.5"/>
+                <path d="M23 25L26 19H54L57 25H23Z" fill="#df7689" stroke="#9e3547" stroke-width="2.4" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <!-- 2. Top-Right: Hand-Drawn Coquette Ribbon Bow -->
+        <div onclick="spawnParticles(event, '🎀✨')" class="doodle-item float-delayed pointer-events-auto absolute top-6 right-5 sm:right-8 w-16 sm:w-20 rotate-6" title="Pita Manis!">
+            <svg viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M46 34C31 16 11 18 13 33C15 46 36 42 46 37" fill="#f7d6dd" stroke="#9e3547" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M54 34C69 16 89 18 87 33C85 46 64 42 54 37" fill="#f7d6dd" stroke="#9e3547" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M45 38C36 52 24 64 16 73" stroke="#9e3547" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="M48 39C41 53 34 65 29 74" stroke="#9e3547" stroke-width="1.9" stroke-linecap="round"/>
+                <path d="M55 38C64 52 76 64 84 73" stroke="#9e3547" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="M52 39C59 53 66 65 71 74" stroke="#9e3547" stroke-width="1.9" stroke-linecap="round"/>
+                <ellipse cx="50" cy="36" rx="5.5" ry="4.5" fill="#d96b7e" stroke="#9e3547" stroke-width="2.2"/>
+            </svg>
+        </div>
+
+        <!-- 3. Upper-Left Sparkles (Near Slot Left) -->
+        <div onclick="spawnParticles(event, '✨🌸')" class="doodle-item pointer-events-auto absolute top-36 left-8 sm:left-14 w-8" title="Sparkle!">
+            <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25 6C25 18 18 25 6 25C18 25 25 32 25 44C25 32 32 25 44 25C32 25 25 18 25 6Z" stroke="#9e3547" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M12 10L12 16M9 13L15 13" stroke="#9e3547" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="39" cy="38" r="2" fill="#9e3547"/>
+            </svg>
+        </div>
+
+        <!-- 4. Upper-Right Sparkles (Below Slot Right) -->
+        <div onclick="spawnParticles(event, '💖✨')" class="doodle-item pointer-events-auto absolute top-52 right-6 sm:right-12 w-8" title="Sparkle!">
+            <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25 6C25 18 18 25 6 25C18 25 25 32 25 44C25 32 32 25 44 25C32 25 25 18 25 6Z" stroke="#9e3547" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M38 10L38 16M35 13L41 13" stroke="#9e3547" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="13" cy="38" r="2" fill="#9e3547"/>
+            </svg>
+        </div>
+
+        <!-- 5. Middle-Left: Cute Cat Doodle -->
+        <div onclick="spawnParticles(event, '🐱💕')" class="doodle-item float-slow pointer-events-auto absolute top-[39%] left-3 sm:left-7 w-14 sm:w-16" title="Meow Good Morning!">
+            <svg viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 25L23 10L35 20" stroke="#9e3547" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M61 25L57 10L45 20" stroke="#9e3547" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="30" cy="34" r="2.6" fill="#9e3547"/>
+                <circle cx="50" cy="34" r="2.6" fill="#9e3547"/>
+                <path d="M38 38H42L40 40.5L38 38Z" fill="#9e3547"/>
+                <path d="M40 40.5C38 43.5 34 43.5 33 41.5" stroke="#9e3547" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M40 40.5C42 43.5 46 43.5 47 41.5" stroke="#9e3547" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M25 48C33 54 47 54 55 48" stroke="#9e3547" stroke-width="2.8" stroke-linecap="round"/>
+                <path d="M16 33L7 31M16 38L6 39" stroke="#9e3547" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M64 33L73 31M64 38L74 39" stroke="#9e3547" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <!-- 6. Middle-Right: Cute Red Spiral Swirl -->
+        <div onclick="spawnParticles(event, '🍭🌸')" class="doodle-item float-delayed pointer-events-auto absolute top-[46%] right-4 sm:right-9 w-11 sm:w-12" title="Swirl!">
+            <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 30C30 26 35 25 36 29C38 35 30 40 24 37C16 33 16 21 25 17C36 12 47 21 45 33C43 46 27 51 15 44" stroke="#9e3547" stroke-width="3.2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <!-- 7. Lower-Left: XOXO Doodle -->
+        <div onclick="spawnParticles(event, '💋❤️')" class="doodle-item pointer-events-auto absolute top-[59%] left-4 sm:left-8 -rotate-12" title="XOXO Sayang!">
+            <span class="font-receipt text-xl sm:text-2xl font-bold tracking-widest text-[#9e3547]">XOXO</span>
+        </div>
+
+        <!-- 8. Lower-Right: Flaky Morning Croissant -->
+        <div onclick="spawnParticles(event, '🥐☕')" class="doodle-item float-slow pointer-events-auto absolute top-[62%] right-3 sm:right-7 w-13 sm:w-15" title="Jangan lupa sarapan ya!">
+            <svg viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 22C28 12 52 16 60 32C66 45 58 58 46 58C40 58 38 52 42 49C45 46 44 39 39 36C34 33 27 36 23 39C18 42 12 32 18 22Z" fill="#f5cbd4" stroke="#9e3547" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M26 17C32 24 34 31 32 36" stroke="#9e3547" stroke-width="2" stroke-linecap="round"/>
+                <path d="M45 19C46 26 44 33 40 37" stroke="#9e3547" stroke-width="2" stroke-linecap="round"/>
+                <path d="M58 33C52 38 46 41 42 41" stroke="#9e3547" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <!-- 9. Bottom-Left: Cute Bunny Face Doodle -->
+        <div onclick="spawnParticles(event, '🐰🌷')" class="doodle-item float-delayed pointer-events-auto absolute bottom-20 left-6 sm:left-11 w-11 sm:w-13" title="Bunny Love!">
+            <svg viewBox="0 0 70 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 38C18 20 18 8 24 8C30 8 32 22 31 36" fill="#fff8fa" stroke="#9e3547" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M46 38C52 20 52 8 46 8C40 8 38 22 39 36" fill="#fff8fa" stroke="#9e3547" stroke-width="2.4" stroke-linecap="round"/>
+                <ellipse cx="35" cy="52" rx="17" ry="15" fill="#fff8fa" stroke="#9e3547" stroke-width="2.4"/>
+                <circle cx="29" cy="50" r="2.2" fill="#9e3547"/>
+                <circle cx="41" cy="50" r="2.2" fill="#9e3547"/>
+                <path d="M33 54L35 56L37 54" stroke="#9e3547" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <!-- 10. Bottom-Right Corner: Teddy Bear with Ribbon -->
+        <div onclick="spawnParticles(event, '🧸💝')" class="doodle-item pointer-events-auto absolute bottom-2 right-1 sm:right-3 w-24 sm:w-28" title="Peluk Jauh Buat Kamu!">
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="38" cy="26" r="10" stroke="#9e3547" stroke-width="2.2"/>
+                <circle cx="82" cy="26" r="10" stroke="#9e3547" stroke-width="2.2"/>
+                <ellipse cx="60" cy="44" rx="25" ry="21" fill="#f7e7e9" stroke="#9e3547" stroke-width="2.2"/>
+                <path d="M38 62C27 75 24 98 32 112H88C96 98 93 75 82 62" stroke="#9e3547" stroke-width="2.2"/>
+                <circle cx="50" cy="41" r="2.4" fill="#9e3547"/>
+                <circle cx="70" cy="41" r="2.4" fill="#9e3547"/>
+                <ellipse cx="60" cy="48" rx="7.5" ry="5.5" stroke="#9e3547" stroke-width="1.8"/>
+                <ellipse cx="60" cy="46" rx="2.8" ry="1.8" fill="#9e3547"/>
+                <path d="M58 65L51 82M62 65L69 82" stroke="#9e3547" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M60 64C50 57 44 61 46 67C48 72 56 68 60 65Z" fill="#e598a6" stroke="#9e3547" stroke-width="2"/>
+                <path d="M60 64C70 57 76 61 74 67C72 72 64 68 60 65Z" fill="#e598a6" stroke="#9e3547" stroke-width="2"/>
+            </svg>
+        </div>
+
+        <!-- 11. Hovering Watercolor Butterfly #1 (Top-Left near Coffee & Title) -->
+        <div onclick="spawnButterflyBurst(event)"
+             class="butterfly-stage pointer-events-auto cursor-pointer absolute top-24 left-12 sm:left-16 w-14 sm:w-16 h-14 sm:h-16"
+             style="animation: butterflyHoverLoop 7.5s ease-in-out infinite; --flap-speed: 0.36s;"
+             title="Klik kupu-kupu cantik! 🦋">
+            <div class="butterfly-3d">
+                <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                    <g class="bf-wing-left"><use href="#watercolorWingLeft"/></g>
+                    <g class="bf-wing-right"><use href="#watercolorWingRight"/></g>
+                    <use href="#watercolorButterflyBody"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 12. Hovering Watercolor Butterfly #2 (Middle-Right near Photos) -->
+        <div onclick="spawnButterflyBurst(event)"
+             class="butterfly-stage pointer-events-auto cursor-pointer absolute top-[34%] right-5 sm:right-10 w-12 sm:w-14 h-12 sm:h-14"
+             style="animation: butterflyHoverLoop 8.8s ease-in-out 1.8s infinite reverse; --flap-speed: 0.42s;"
+             title="Klik kupu-kupu cantik! 🦋">
+            <div class="butterfly-3d" style="transform: rotateX(26deg) rotateZ(16deg);">
+                <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                    <g class="bf-wing-left"><use href="#watercolorWingLeft"/></g>
+                    <g class="bf-wing-right"><use href="#watercolorWingRight"/></g>
+                    <use href="#watercolorButterflyBody"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FREE-FLYING BUTTERFLIES ACROSS SCREEN ================= -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-30">
+        <!-- Gliding Butterfly A: Bottom-Left to Top-Right -->
+        <div class="butterfly-stage absolute top-0 left-0 w-12 sm:w-14 h-12 sm:h-14"
+             style="animation: butterflyFlight1 16s linear infinite; --flap-speed: 0.32s;">
+            <div class="butterfly-3d">
+                <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                    <g class="bf-wing-left"><use href="#watercolorWingLeft"/></g>
+                    <g class="bf-wing-right"><use href="#watercolorWingRight"/></g>
+                    <use href="#watercolorButterflyBody"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Gliding Butterfly B: Top-Right to Bottom-Left -->
+        <div class="butterfly-stage absolute top-0 left-0 w-10 sm:w-12 h-10 sm:h-12"
+             style="animation: butterflyFlight2 21s linear 5s infinite; --flap-speed: 0.38s;">
+            <div class="butterfly-3d">
+                <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                    <g class="bf-wing-left"><use href="#watercolorWingLeft"/></g>
+                    <g class="bf-wing-right"><use href="#watercolorWingRight"/></g>
+                    <use href="#watercolorButterflyBody"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN PHOTOBOX CONTAINER ================= -->
+    <main class="w-full max-w-md mx-auto flex flex-col items-center relative z-20 pt-3 pb-20">
+
+        <!-- Handwritten Calligraphy Title -->
+        <h1 id="moodTitle"
+            class="font-script text-6xl sm:text-7xl text-[#2d1218] text-center leading-none mt-2 mb-3 px-3 py-1">
+            morning, Sayang
+        </h1>
+
+        <!-- Subtitle Right Above Slot -->
+        <div class="flex items-center gap-2 mb-2">
+            <p class="text-[11px] sm:text-xs font-bold tracking-[0.16em] text-[#421c24] uppercase">
+                GET YOUR RECEIPTS IN HERE
+            </p>
+        </div>
+
+        <!-- ================= THE 3D SLOT DISPENSER & EMERGING STRIP ================= -->
+        <div class="w-full max-w-[320px] sm:max-w-[340px] flex flex-col items-center relative">
+
+            <!-- 3D White/Blush Printer Slot Housing (z-15 so paper at z-25 overlaps the bottom white rim!) -->
+            <div onclick="restartPrintStrip()"
+                 class="slot-housing w-full h-16 sm:h-[68px] flex flex-col items-center justify-center px-6 relative z-[15] cursor-pointer transition-transform active:scale-[0.99]"
+                 title="Klik mesin photobox untuk mencetak ulang!">
+                
+                <!-- Tiny Status Text on Top of Slot -->
+                <div class="w-full flex items-center justify-between mb-1.5 px-1">
+                    <span class="text-[8.5px] font-bold tracking-widest text-[#b56576] uppercase">MORNING PHOTOBOX</span>
+                    <span id="slotStatusBadge" class="text-[8.5px] font-bold tracking-wider text-[#9e3547]">SIAP MENCETAK...</span>
+                </div>
+
+                <!-- Dark Horizontal Slot Hole -->
+                <div id="slot-opening" class="slot-opening w-full h-3.5 flex items-center justify-center">
+                    <!-- Top half lip mask (z-35) sits ABOVE the emerging paper so paper comes straight out of the black slot -->
+                    <div class="slot-top-lip-mask"></div>
+                </div>
+            </div>
+
+            <!-- ================= CONTINUOUS PAPER VIEWPORT (EMERGING DIRECTLY FROM BLACK SLOT) ================= -->
+            <div id="paper-viewport" class="flex flex-col items-center">
+                <!-- Realistic shadow cast directly from the dark slot opening onto the paper -->
+                <div class="slot-lip-shadow"></div>
+
+                <!-- ONE UNIFIED CONTINUOUS STRIP (Dynamically rendered based on settings!) -->
+                <div id="receipt-strip" class="w-[215px] sm:w-[230px] flex flex-col items-center pt-1 gap-6">
+                    <!-- Rendered dynamically by renderStripItems() -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Subtle Non-Intrusive Creator Watermark -->
+        <p class="mt-2 font-receipt text-[9.5px] tracking-[0.2em] text-[#9e3547]/45 hover:text-[#9e3547]/80 transition-colors select-none">
+            created by <span class="font-bold">heyivaann</span>
+        </p>
+
+    </main>
+
+    <!-- ================= FLOATING ACTION CONTROLS (HIDDEN IN GIFT MODE) ================= -->
+    <div id="creatorFloatingBar" class="fixed bottom-4 inset-x-4 max-w-xs mx-auto z-40 transition-all duration-300">
+        <div class="bg-white/95 backdrop-blur-md border border-pink-200/90 rounded-full px-3 py-1.5 shadow-lg shadow-pink-950/10 flex items-center justify-between gap-1.5">
+            
+            <!-- Replay Print Button -->
+            <button onclick="restartPrintStrip()" class="flex items-center gap-1.5 bg-[#9e3547] hover:bg-[#822837] text-white text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm transition active:scale-95">
+                <span>🖨️</span>
+                <span>Cetak Ulang</span>
+            </button>
+
+            <!-- Sound Toggle Button -->
+            <button onclick="toggleAudio()" class="w-8 h-8 flex items-center justify-center rounded-full bg-pink-50 hover:bg-pink-100 text-[#9e3547] border border-pink-200 transition active:scale-95" title="Suara Printer On/Off">
+                <span id="audioIcon" class="text-xs">🔊</span>
+            </button>
+
+            <!-- Settings Gear Button (Hidden when shared with recipient!) -->
+            <button id="openSettingsBtn" onclick="openSettingsModal()" class="flex items-center gap-1 bg-pink-100 hover:bg-pink-200 text-[#8a2438] text-[11px] font-bold px-3 py-1.5 rounded-full transition active:scale-95" title="Atur Foto, Jumlah Receipt & Pesan">
+                <span>⚙️</span>
+                <span>Atur</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Minimal Replay Pill for Recipient Mode (Only Cetak Ulang & Sound, NO Settings!) -->
+    <div id="recipientFloatingBar" class="fixed bottom-4 z-40 hidden">
+        <div class="bg-white/90 backdrop-blur-md border border-pink-200/90 rounded-full px-2.5 py-1.5 shadow-md shadow-pink-950/10 flex items-center gap-2">
+            <button onclick="restartPrintStrip()" class="flex items-center gap-1.5 bg-[#9e3547] hover:bg-[#822837] text-white text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm transition active:scale-95">
+                <span>🖨️</span>
+                <span>Cetak Ulang</span>
+            </button>
+            <button onclick="toggleAudio()" class="w-7 h-7 flex items-center justify-center rounded-full bg-pink-50 hover:bg-pink-100 text-[#9e3547] border border-pink-200 transition active:scale-95" title="Suara Printer On/Off">
+                <span id="audioIconRecipient" class="text-xs">🔊</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= CUSTOMIZATION & SHARE MODAL (FOR SENDER ONLY) ================= -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#fff9fa] border-2 border-pink-200 rounded-3xl w-full max-w-md max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-[#9e3547] to-[#b84a5e] px-5 py-3.5 text-white flex items-center justify-between">
+                <div>
+                    <h2 class="font-bold text-sm sm:text-base flex items-center gap-1.5">
+                        <span>✨</span>
+                        <span>Atur Photobox & Struk Cinta</span>
+                    </h2>
+                    <p class="text-[11px] text-pink-100">Sesuaikan isi foto & pesan sebelum dikirim ke dia</p>
+                </div>
+                <button onclick="closeSettingsModal()" class="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white font-bold text-sm transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-4 sm:p-5 overflow-y-auto custom-scroll space-y-4 text-xs text-[#381820]">
+                
+                <!-- 1. Judul Sapaan & Penerima -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-[#8a2438] mb-1">Judul Sapaan Atas</label>
+                        <input id="inputTitle" type="text" placeholder="morning, Sayang"
+                               class="w-full px-3 py-2 rounded-xl border border-pink-200 bg-white focus:outline-none focus:border-[#9e3547]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-[#8a2438] mb-1">Untuk Siapa (Di Struk)</label>
+                        <input id="inputRecipient" type="text" placeholder="KESAYANGANKU"
+                               class="w-full px-3 py-2 rounded-xl border border-pink-200 bg-white focus:outline-none focus:border-[#9e3547]">
+                    </div>
+                </div>
+
+                <!-- 2. Pilih Jumlah Foto yang Keluar -->
+                <div>
+                    <label class="block font-bold text-[#8a2438] mb-1.5">Jumlah Foto Stamp yang Dicetak</label>
+                    <div class="grid grid-cols-4 gap-2" id="photoCountSelector">
+                        <button type="button" onclick="setPhotoCount(1)" data-count="1" class="count-btn py-2 rounded-xl border font-bold transition">1 Foto</button>
+                        <button type="button" onclick="setPhotoCount(2)" data-count="2" class="count-btn py-2 rounded-xl border font-bold transition">2 Foto</button>
+                        <button type="button" onclick="setPhotoCount(3)" data-count="3" class="count-btn py-2 rounded-xl border font-bold transition">3 Foto</button>
+                        <button type="button" onclick="setPhotoCount(4)" data-count="4" class="count-btn py-2 rounded-xl border font-bold transition">4 Foto</button>
+                    </div>
+                </div>
+
+                <!-- 3. Daftar Foto & Caption Masing-Masing -->
+                <div>
+                    <label class="block font-bold text-[#8a2438] mb-1.5">Upload Foto & Tulis Caption Singkat</label>
+                    <div id="photoInputsContainer" class="space-y-2.5">
+                        <!-- Dynamically populated photo editors -->
+                    </div>
+                </div>
+
+                <!-- 4. Tampilkan Struk Cinta & Isi Pesan -->
+                <div class="border-t border-pink-200 pt-3.5">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="font-bold text-[#8a2438]">Sertakan Struk Cinta (Love Receipt)</label>
+                        <input id="inputShowReceipt" type="checkbox" checked class="w-4 h-4 accent-[#9e3547] rounded cursor-pointer">
+                    </div>
+
+                    <label class="block font-bold text-[#8a2438] mb-1">Pesan Manis di Dalam Struk</label>
+                    <textarea id="inputSweetNote" rows="3"
+                              placeholder="Tulis ucapan selamat pagi atau pesan romantis untuknya..."
+                              class="w-full px-3 py-2 rounded-xl border border-pink-200 bg-white focus:outline-none focus:border-[#9e3547] resize-none"></textarea>
+                </div>
+
+                <!-- Info Box about Gift Mode -->
+                <div class="bg-pink-100/70 border border-pink-200 rounded-2xl p-3 text-[11px] text-[#6e2332] leading-relaxed">
+                    💡 <b>Tips Kirim ke Pacar/Gebetan:</b> Gunakan tombol <b>"Simpan File Siap Kirim"</b> atau <b>"Salin Link"</b> di bawah. Saat dibuka oleh dia, <b>tombol Pengaturan ini otomatis hilang</b> sehingga tampilannya bersih!
+                </div>
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="bg-pink-50/90 border-t border-pink-200 px-4 py-3 flex flex-col sm:flex-row gap-2">
+                <button onclick="saveAndApplySettings()" class="flex-1 bg-white hover:bg-pink-100/60 text-[#9e3547] border border-[#9e3547] font-bold text-xs py-2.5 px-3 rounded-xl transition active:scale-95">
+                    ✅ Terapkan & Cetak
+                </button>
+                <button id="copyShortLinkBtn" onclick="copyShareableGiftLink()" class="flex-1 bg-pink-200/90 hover:bg-pink-300/80 text-[#6e2332] font-bold text-xs py-2.5 px-3 rounded-xl transition active:scale-95" title="Buat & salin link pendek tanpa tombol setting">
+                    🔗 Salin Link Pendek
+                </button>
+                <button onclick="exportCleanGiftHtml()" class="flex-1 bg-[#9e3547] hover:bg-[#822837] text-white font-bold text-xs py-2.5 px-3 rounded-xl shadow-sm transition active:scale-95" title="Download file HTML siap kirim WhatsApp tanpa menu setting">
+                    🎁 Simpan File Kado
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotice" class="fixed top-5 inset-x-4 max-w-xs mx-auto bg-[#381820] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-xl text-center z-50 hidden transition-all">
+        Tersimpan! ✨
+    </div>
+
+    <!-- ================= PHOTO ZOOM LIGHTBOX MODAL ================= -->
+    <div id="photoZoomModal"
+         onclick="closePhotoZoom()"
+         class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4 cursor-zoom-out">
+        
+        <div onclick="event.stopPropagation()"
+             class="zoom-card-animate relative w-full max-w-[330px] sm:max-w-[380px] cursor-default">
+            
+            <!-- Close Button -->
+            <button onclick="closePhotoZoom()"
+                    class="absolute -top-4 -right-3 z-30 w-9 h-9 rounded-full bg-[#9e3547] hover:bg-[#822837] text-white font-bold text-sm shadow-lg flex items-center justify-center border-2 border-white transition active:scale-90"
+                    title="Tutup Zoom">
+                ✕
+            </button>
+
+            <!-- Enlarged Postage Stamp Frame -->
+            <div class="stamp-card w-full shadow-2xl">
+                <div class="stamp-inner-sides">
+                    <div class="relative overflow-hidden bg-pink-50 border border-stone-300 aspect-[4/4.8]">
+                        <img id="zoomModalImg"
+                             src=""
+                             alt="Zoomed Photo"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="pt-3 pb-0.5 flex items-center justify-between px-1 gap-2">
+                        <p id="zoomModalCaption" class="font-hand text-2xl sm:text-3xl text-[#6e2332] font-bold leading-tight break-words"></p>
+                        <span id="zoomModalNumber" class="text-xs font-receipt text-pink-400 shrink-0">#01</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-white/80 text-[11px] mt-3 pointer-events-none">
+                Klik di luar foto untuk menutup ✨
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= RECEIPT LETTER HANDWRITING ZOOM MODAL ================= -->
+    <div id="receiptLetterModal"
+         onclick="closeReceiptLetterModal()"
+         class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4 cursor-zoom-out">
+        
+        <div onclick="event.stopPropagation()"
+             class="zoom-card-animate relative w-full max-w-[345px] sm:max-w-[395px] cursor-default">
+            
+            <!-- Close Button -->
+            <button onclick="closeReceiptLetterModal()"
+                    class="absolute -top-4 -right-3 z-30 w-9 h-9 rounded-full bg-[#9e3547] hover:bg-[#822837] text-white font-bold text-sm shadow-lg flex items-center justify-center border-2 border-white transition active:scale-90"
+                    title="Tutup Surat">
+                ✕
+            </button>
+
+            <!-- Enlarged Thermal Receipt Greeting Letter Card -->
+            <div class="love-receipt-card w-full px-5 pt-5 pb-6 text-[#3b1721] shadow-2xl">
+                
+                <!-- Receipt Letter Header -->
+                <div class="text-center border-b-2 border-dashed border-pink-300 pb-3 mb-3 font-receipt">
+                    <div class="inline-flex items-center gap-1.5 bg-pink-100 text-[#9e3547] text-[10px] font-bold px-3 py-0.5 rounded-full mb-1">
+                        <span>💌</span>
+                        <span>SPECIAL LOVE LETTER RECEIPT</span>
+                    </div>
+                    <p id="letterModalRecipient" class="text-[11px] font-bold tracking-wider text-[#9e3547] mt-1">
+                        UNTUK: KESAYANGANKU
+                    </p>
+                    <p id="letterModalDate" class="text-[9.5px] text-pink-400 mt-0.5"></p>
+                </div>
+
+                <!-- Lined Paper Area where Text is Handwritten with Pencil Sound -->
+                <div class="lined-letter-paper rounded-2xl px-4 py-3 border border-pink-200/90 min-h-[168px] flex flex-col justify-between relative shadow-inner">
+                    <div class="font-hand text-2xl sm:text-[26px] text-[#7a1f31] font-bold tracking-wide break-words">
+                        <span id="letterTypedText"></span><span id="letterPencilCursor" class="pencil-cursor">✏️</span>
+                    </div>
+
+                    <div id="letterSignatureRow" class="text-right mt-3 opacity-0 transition-opacity duration-500">
+                        <span class="font-script text-2xl text-[#9e3547]">With love, always 💖</span>
+                    </div>
+                </div>
+
+                <!-- Receipt Footer & Replay Writing Button -->
+                <div class="mt-4 pt-2.5 border-t border-dashed border-pink-300 flex items-center justify-between font-receipt text-[10px]">
+                    <span id="letterWritingStatus" class="text-pink-500 font-bold flex items-center gap-1">
+                        <span>✏️</span>
+                        <span>Menulis surat...</span>
+                    </span>
+                    <button onclick="replayLetterWriting()"
+                            class="bg-pink-100 hover:bg-pink-200 text-[#8a2438] font-bold px-3 py-1 rounded-full transition active:scale-95">
+                        🔄 Tulis Ulang
+                    </button>
+                </div>
+            </div>
+
+            <p class="text-center text-white/80 text-[11px] mt-3 pointer-events-none">
+                Klik di luar kertas struk untuk menutup ✨
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT: CONFIG, RENDER & 1-BY-1 SLOT ANIMATION ================= -->
+    <script>
+        /*__BAKED_GIFT_CONFIG_START__*/
+        const BAKED_GIFT_CONFIG = null;
+        /*__BAKED_GIFT_CONFIG_END__*/
+
+        const DEFAULT_CONFIG = {
+            title: "morning, Sayang",
+            recipient: "KESAYANGANKU",
+            photoCount: 3,
+            showReceipt: true,
+            sweetNote: '"Selamat pagi sayang! Semangat yaa jalani hari ini, jangan lupa sarapan. Aku selalu bangga & sayang banget sama kamu! 🌷☕💖"',
+            photos: [
+                {
+                    src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80",
+                    caption: "Selamat pagi perempuan paling manis ❤️"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+                    caption: "Jangan lupa sarapan & senyum ya ☕✨"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
+                    caption: "Semangat hari ini kesayanganku! 🌷"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?auto=format&fit=crop&w=600&q=80",
+                    caption: "Aku selalu sayang kamu setiap hari 💕"
+                }
+            ]
+        };
+
+        let appConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        let isRecipientGiftMode = false;
+
+        let soundOn = true;
+        let audioCtx = null;
+        let motorSoundInterval = null;
+        let stageTimeouts = [];
+
+        // Check URL parameters or Baked Gift Config on startup
+        async function loadInitialState() {
+            const params = new URLSearchParams(window.location.search);
+
+            // 1. Check if this file was exported as a Clean Gift HTML
+            if (BAKED_GIFT_CONFIG) {
+                appConfig = JSON.parse(JSON.stringify(BAKED_GIFT_CONFIG));
+                isRecipientGiftMode = true;
+                return;
+            }
+
+            // 2. Check if short cloud ID (?k=xxx) exists in URL
+            const shortKey = params.get('k');
+            if (shortKey) {
+                isRecipientGiftMode = true;
+                try {
+                    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${encodeURIComponent(shortKey)}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (res.ok) {
+                        const cloudData = await res.json();
+                        appConfig = Object.assign({}, DEFAULT_CONFIG, cloudData);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Gagal memuat short link cloud:', e);
+                }
+            }
+
+            // 3. Check if compact delta (#g=...) or legacy (#gift=...) exists in URL hash
+            if (window.location.hash && (window.location.hash.startsWith('#g=') || window.location.hash.startsWith('#gift='))) {
+                try {
+                    const isCompact = window.location.hash.startsWith('#g=');
+                    const encoded = window.location.hash.replace(isCompact ? '#g=' : '#gift=', '');
+                    const decoded = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+                    if (isCompact) {
+                        applyDeltaConfig(decoded);
+                    } else {
+                        appConfig = Object.assign({}, DEFAULT_CONFIG, decoded);
+                    }
+                    isRecipientGiftMode = true;
+                    // Clean up the long hash from the browser address bar immediately so the URL looks super short & neat!
+                    if (window.history && window.history.replaceState) {
+                        const cleanUrl = `${window.location.pathname}?kado=1`;
+                        window.history.replaceState(null, '', cleanUrl);
+                    }
+                    return;
+                } catch (e) {
+                    console.warn('Gagal membaca link gift:', e);
+                }
+            }
+
+            // 4. Check if localStorage has saved creator settings
+            try {
+                const saved = localStorage.getItem('morning_photobox_config_v2');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    appConfig = Object.assign({}, DEFAULT_CONFIG, parsed);
+                    while (appConfig.photos.length < 4) {
+                        appConfig.photos.push(DEFAULT_CONFIG.photos[appConfig.photos.length]);
+                    }
+                }
+            } catch (e) {}
+
+            // 5. If ?kado=1 or ?view=gift or ?mode=gift is in URL, hide settings UI
+            if (params.get('kado') === '1' || params.get('view') === 'gift' || params.get('mode') === 'gift' || params.get('gift') === '1') {
+                isRecipientGiftMode = true;
+            }
+        }
+
+        // Build ultra-compact delta object (only stores values that differ from DEFAULT_CONFIG)
+        function buildDeltaConfig() {
+            const d = {};
+            if (appConfig.title !== DEFAULT_CONFIG.title) d.t = appConfig.title;
+            if (appConfig.recipient !== DEFAULT_CONFIG.recipient) d.r = appConfig.recipient;
+            if (appConfig.photoCount !== DEFAULT_CONFIG.photoCount) d.c = appConfig.photoCount;
+            if (appConfig.showReceipt !== DEFAULT_CONFIG.showReceipt) d.s = appConfig.showReceipt ? 1 : 0;
+            if (appConfig.sweetNote !== DEFAULT_CONFIG.sweetNote) d.n = appConfig.sweetNote;
+
+            const pDelta = [];
+            let hasCustomPhotoField = false;
+            for (let i = 0; i < appConfig.photoCount; i++) {
+                const p = appConfig.photos[i];
+                const def = DEFAULT_CONFIG.photos[i];
+                const item = {};
+                if (p.src !== def.src) { item.u = p.src; hasCustomPhotoField = true; }
+                if (p.caption !== def.caption) { item.cp = p.caption; hasCustomPhotoField = true; }
+                pDelta.push(item);
+            }
+            if (hasCustomPhotoField) d.p = pDelta;
+            return d;
+        }
+
+        function applyDeltaConfig(d) {
+            appConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+            if (d.t !== undefined) appConfig.title = d.t;
+            if (d.r !== undefined) appConfig.recipient = d.r;
+            if (d.c !== undefined) appConfig.photoCount = d.c;
+            if (d.s !== undefined) appConfig.showReceipt = !!d.s;
+            if (d.n !== undefined) appConfig.sweetNote = d.n;
+            if (Array.isArray(d.p)) {
+                d.p.forEach((item, idx) => {
+                    if (!appConfig.photos[idx]) appConfig.photos[idx] = { src: '', caption: '' };
+                    if (item.u) appConfig.photos[idx].src = item.u;
+                    if (item.cp !== undefined) appConfig.photos[idx].caption = item.cp;
+                });
+            }
+        }
+
+        function applyModeVisibility() {
+            const creatorBar = document.getElementById('creatorFloatingBar');
+            const recipientBar = document.getElementById('recipientFloatingBar');
+
+            if (isRecipientGiftMode) {
+                creatorBar.classList.add('hidden');
+                recipientBar.classList.remove('hidden');
+            } else {
+                creatorBar.classList.remove('hidden');
+                recipientBar.classList.add('hidden');
+            }
+        }
+
+        function formatIndonesianDate() {
+            const now = new Date();
+            const opts = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            return now.toLocaleDateString('id-ID', opts).toUpperCase();
+        }
+
+        // Render the strip DOM dynamically based on appConfig
+        function renderStripItems() {
+            document.getElementById('moodTitle').textContent = appConfig.title || 'morning, Sayang';
+
+            const strip = document.getElementById('receipt-strip');
+            strip.innerHTML = '';
+
+            const count = Math.min(Math.max(parseInt(appConfig.photoCount) || 3, 1), 4);
+            // Notice: The item at the BOTTOM of the strip emerges FIRST from the slot.
+            // So we render Photo #count at the top, down to Photo #1 above the receipt!
+            for (let i = count - 1; i >= 0; i--) {
+                const item = appConfig.photos[i] || DEFAULT_CONFIG.photos[i];
+                const numLabel = `#0${i + 1}`;
+
+                const card = document.createElement('div');
+                card.className = 'stamp-card w-full strip-stage-item cursor-zoom-in transition-transform duration-200 hover:scale-[1.02]';
+                card.dataset.stageLabel = `MENCETAK FOTO #${i + 1}...`;
+                card.dataset.pauseLabel = i === count - 1 ? 'SELESAI DICETAK ❤️' : `FOTO #${i + 1} SELESAI 🌸`;
+                card.title = 'Klik untuk memperbesar foto 🔍';
+                card.onclick = (e) => openPhotoZoom(i, e);
+
+                card.innerHTML = `
+                    <div class="stamp-inner-sides">
+                        <div class="relative overflow-hidden bg-pink-50 border border-stone-300 aspect-[4/4.8] group">
+                            <img src="${item.src}"
+                                 onerror="this.src='https://placehold.co/400x480/fce4ec/9e3547?text=Morning+Love+%E2%9D%A4%EF%B8%8F'"
+                                 alt="Photo ${i + 1}"
+                                 class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                            <div class="absolute bottom-2 right-2 bg-black/45 backdrop-blur-2xs text-white text-[9.5px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                🔍 Perbesar
+                            </div>
+                        </div>
+                        <div class="pt-2 flex items-center justify-between px-0.5 gap-1">
+                            <p class="font-hand text-lg sm:text-xl text-[#6e2332] font-bold leading-tight break-words">
+                                ${escapeHtml(item.caption || '')}
+                            </p>
+                            <span class="text-[10px] font-receipt text-pink-400 shrink-0">${numLabel}</span>
+                        </div>
+                    </div>
+                `;
+                strip.appendChild(card);
+            }
+
+            // Append Love Receipt at the bottom of the strip if enabled
+            if (appConfig.showReceipt) {
+                const receipt = document.createElement('div');
+                receipt.className = 'love-receipt-card w-full px-3.5 pt-3.5 pb-4 text-[#3b1721] font-receipt text-[10.5px] strip-stage-item cursor-zoom-in transition-transform duration-200 hover:scale-[1.02] group';
+                receipt.dataset.stageLabel = 'MENCETAK STRUK CINTA...';
+                receipt.dataset.pauseLabel = 'STRUK CINTA KELUAR 💌';
+                receipt.title = 'Klik untuk membaca surat ucapan 💌';
+                receipt.onclick = (e) => openReceiptLetterModal(e);
+
+                receipt.innerHTML = `
+                    <div class="text-center border-b border-dashed border-pink-300 pb-2 mb-2">
+                        <p class="font-bold text-[11px] tracking-wider text-[#9e3547]">★ MORNING LOVE RECEIPT ★</p>
+                        <p class="text-[9px] text-pink-500 mt-0.5">UNTUK: ${escapeHtml((appConfig.recipient || 'KESAYANGANKU').toUpperCase())} • ${formatIndonesianDate()}</p>
+                    </div>
+
+                    <div class="space-y-1 text-[10px]">
+                        <div class="flex justify-between">
+                            <span>1x Senyum Manis Kamu</span>
+                            <span class="font-bold text-[#9e3547]">1000%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>1x Semangat Hari Ini</span>
+                            <span class="font-bold text-[#9e3547]">FULL</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>1x Doa & Peluk Dariku</span>
+                            <span class="font-bold text-[#9e3547]">ALWAYS</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>1x Sayangku ke Kamu</span>
+                            <span class="font-bold text-[#9e3547]">∞ UNLIMITED</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-b border-dashed border-pink-300 my-2 py-1 flex justify-between font-bold text-[10.5px] text-[#9e3547]">
+                        <span>TOTAL MOOD HARI INI</span>
+                        <span>BAHAGIA 💖</span>
+                    </div>
+
+                    <div class="bg-pink-50/90 group-hover:bg-pink-100/80 transition rounded-lg p-2 border border-pink-200/80 mb-2.5 text-center relative">
+                        <p class="font-hand text-base sm:text-lg leading-snug text-[#8a2438] font-bold break-words">
+                            ${escapeHtml(appConfig.sweetNote || '')}
+                        </p>
+                        <span class="inline-block mt-1 text-[9px] font-receipt font-bold text-[#9e3547] bg-white/90 px-2 py-0.5 rounded-full border border-pink-200 shadow-2xs">
+                            💌 Klik baca surat tulisan tangan
+                        </span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <svg class="w-40 h-7 text-[#3b1721]" viewBox="0 0 200 30" fill="currentColor">
+                            <rect x="6" y="0" width="3" height="30"/><rect x="12" y="0" width="1.5" height="30"/>
+                            <rect x="17" y="0" width="4" height="30"/><rect x="24" y="0" width="2" height="30"/>
+                            <rect x="30" y="0" width="1.5" height="30"/><rect x="35" y="0" width="5" height="30"/>
+                            <rect x="43" y="0" width="2" height="30"/><rect x="49" y="0" width="3" height="30"/>
+                            <rect x="55" y="0" width="1.5" height="30"/><rect x="60" y="0" width="4" height="30"/>
+                            <rect x="68" y="0" width="2" height="30"/><rect x="73" y="0" width="4.5" height="30"/>
+                            <rect x="81" y="0" width="1.5" height="30"/><rect x="86" y="0" width="3" height="30"/>
+                            <rect x="93" y="0" width="2" height="30"/><rect x="98" y="0" width="5" height="30"/>
+                            <rect x="106" y="0" width="1.5" height="30"/><rect x="111" y="0" width="3.5" height="30"/>
+                            <rect x="118" y="0" width="2" height="30"/><rect x="124" y="0" width="4" height="30"/>
+                            <rect x="131" y="0" width="1.5" height="30"/><rect x="136" y="0" width="3" height="30"/>
+                            <rect x="143" y="0" width="5" height="30"/><rect x="151" y="0" width="2" height="30"/>
+                            <rect x="157" y="0" width="1.5" height="30"/><rect x="162" y="0" width="4" height="30"/>
+                            <rect x="169" y="0" width="2.5" height="30"/><rect x="175" y="0" width="1.5" height="30"/>
+                            <rect x="180" y="0" width="4.5" height="30"/><rect x="188" y="0" width="3" height="30"/>
+                        </svg>
+                        <span class="text-[8.5px] tracking-[0.24em] text-pink-400 mt-1">I-LOVE-YOU-EVERY-MORNING</span>
+                    </div>
+                `;
+                strip.appendChild(receipt);
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Synthesize realistic thermal receipt printer "sreeettttt" sound (filtered paper friction + rapid micro-stepper buzz)
+        let activeBurstNodes = [];
+
+        function stopActivePrintSound() {
+            activeBurstNodes.forEach(node => {
+                try { node.stop(); } catch (e) {}
+                try { node.disconnect(); } catch (e) {}
+            });
+            activeBurstNodes = [];
+            if (motorSoundInterval) {
+                clearInterval(motorSoundInterval);
+                motorSoundInterval = null;
+            }
+        }
+
+        function startThermalSreetSound(durationMs = 2100) {
+            if (!soundOn) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                stopActivePrintSound();
+
+                const now = audioCtx.currentTime;
+                const durSec = durationMs / 1000;
+
+                // 1. Paper friction "Sreeetttt" layer (Bandpass-filtered white/pink noise with rapid thermal line modulation)
+                const bufferSize = Math.floor(audioCtx.sampleRate * durSec);
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+
+                // Create textured thermal paper noise (modulated at ~55Hz like rapid thermal scanlines)
+                for (let i = 0; i < bufferSize; i++) {
+                    const t = i / audioCtx.sampleRate;
+                    // Smooth speed curve matching cubic-bezier slide (fast start, gentler end)
+                    const speedFactor = 1.0 - 0.35 * (t / durSec);
+                    const lineMod = 0.55 + 0.45 * Math.sin(2 * Math.PI * (58 * speedFactor) * t);
+                    const microGrain = (Math.random() * 2 - 1);
+                    output[i] = microGrain * lineMod;
+                }
+
+                const whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+
+                // Bandpass filter focused on crisp paper sliding / thermal head friction (1400 Hz - 2400 Hz)
+                const bandpass = audioCtx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.setValueAtTime(1850, now);
+                bandpass.frequency.linearRampToValueAtTime(1450, now + durSec);
+                bandpass.Q.setValueAtTime(1.8, now);
+
+                // Highpass to keep it crisp like thin receipt paper ("sreett", not muddy)
+                const highpass = audioCtx.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.setValueAtTime(650, now);
+
+                const noiseGain = audioCtx.createGain();
+                noiseGain.gain.setValueAtTime(0.001, now);
+                noiseGain.gain.linearRampToValueAtTime(0.075, now + 0.06);
+                noiseGain.gain.setValueAtTime(0.068, now + durSec * 0.75);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+                whiteNoise.connect(bandpass);
+                bandpass.connect(highpass);
+                highpass.connect(noiseGain);
+                noiseGain.connect(audioCtx.destination);
+
+                whiteNoise.start(now);
+                whiteNoise.stop(now + durSec);
+                activeBurstNodes.push(whiteNoise);
+
+                // 2. Subtle high-speed thermal stepper motor whirr ("zrrrrt" undertone)
+                const motorOsc = audioCtx.createOscillator();
+                const motorFilter = audioCtx.createBiquadFilter();
+                const motorGain = audioCtx.createGain();
+
+                motorOsc.type = 'sawtooth';
+                motorOsc.frequency.setValueAtTime(145, now);
+                motorOsc.frequency.linearRampToValueAtTime(112, now + durSec);
+
+                motorFilter.type = 'bandpass';
+                motorFilter.frequency.setValueAtTime(520, now);
+                motorFilter.Q.setValueAtTime(2.5, now);
+
+                motorGain.gain.setValueAtTime(0.001, now);
+                motorGain.gain.linearRampToValueAtTime(0.018, now + 0.05);
+                motorGain.gain.exponentialRampToValueAtTime(0.0008, now + durSec);
+
+                motorOsc.connect(motorFilter);
+                motorFilter.connect(motorGain);
+                motorGain.connect(audioCtx.destination);
+
+                motorOsc.start(now);
+                motorOsc.stop(now + durSec);
+                activeBurstNodes.push(motorOsc);
+            } catch (e) {}
+        }
+
+        // Crisp paper stop/cut "snick" sound when each stage finishes sliding
+        function playPauseDing(mult = 1) {
+            if (!soundOn) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+
+                // Quick paper-stop "tk/snip" transient
+                const bufLen = Math.floor(audioCtx.sampleRate * 0.045);
+                const buf = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < bufLen; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.25));
+                }
+                const snipSource = audioCtx.createBufferSource();
+                snipSource.buffer = buf;
+
+                const snipFilter = audioCtx.createBiquadFilter();
+                snipFilter.type = 'bandpass';
+                snipFilter.frequency.setValueAtTime(2400 * mult, now);
+                snipFilter.Q.setValueAtTime(2.0, now);
+
+                const snipGain = audioCtx.createGain();
+                snipGain.gain.setValueAtTime(0.05, now);
+                snipGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+
+                snipSource.connect(snipFilter);
+                snipFilter.connect(snipGain);
+                snipGain.connect(audioCtx.destination);
+                snipSource.start(now);
+            } catch (e) {}
+        }
+
+        function clearPrintSchedule() {
+            stopActivePrintSound();
+            stageTimeouts.forEach(t => clearTimeout(t));
+            stageTimeouts = [];
+        }
+
+        /**
+         * DYNAMIC 1-BY-1 SLOT SLIDE ANIMATION
+         * Automatically measures the exact pixel offset of every card in #receipt-strip
+         * so whether the user chooses 1, 2, 3, or 4 photos (with or without receipt),
+         * each card emerges one-by-one directly from the black slot and pauses cleanly!
+         */
+        function runStagedSlotPrint() {
+            const strip = document.getElementById('receipt-strip');
+            const badge = document.getElementById('slotStatusBadge');
+
+            clearPrintSchedule();
+
+            // Instantly tuck the entire strip up inside the black slot
+            strip.style.transition = 'none';
+            strip.style.transform = 'translateY(-102%)';
+            strip.classList.remove('motor-active');
+
+            // Force reflow
+            void strip.offsetHeight;
+
+            const totalHeight = strip.offsetHeight;
+            const children = Array.from(strip.querySelectorAll('.strip-stage-item'));
+            if (children.length === 0) return;
+
+            // Build stages from bottom child (emerges first) to top child (emerges last at 0px)
+            const printSteps = [];
+            for (let i = children.length - 1; i >= 0; i--) {
+                const el = children[i];
+                // When child[i] has just emerged, its top edge is right below the black slot
+                const translatePx = i === 0 ? 0 : -(el.offsetTop - 6);
+                printSteps.push({
+                    targetY: `${translatePx}px`,
+                    status: el.dataset.stageLabel || 'MENCETAK...',
+                    pauseText: i === 0 ? 'SELESAI DICETAK ❤️' : (el.dataset.pauseLabel || 'SELESAI ✨'),
+                    pitch: 1 + ((children.length - 1 - i) * 0.12)
+                });
+            }
+
+            const moveTime = 2100;  // 2.1s smooth slide per stage
+            const pauseTime = 1100; // 1.1s pause between each stage
+
+            printSteps.forEach((step, idx) => {
+                const startAt = idx * (moveTime + pauseTime);
+
+                const moveTimer = setTimeout(() => {
+                    badge.textContent = step.status;
+                    strip.style.transition = `transform ${moveTime}ms cubic-bezier(0.25, 0.9, 0.35, 1)`;
+                    strip.style.transform = `translateY(${step.targetY})`;
+                    strip.classList.add('motor-active');
+
+                    // Play continuous thermal receipt "sreeettttt" sound for this slide step
+                    startThermalSreetSound(moveTime);
+                }, startAt);
+                stageTimeouts.push(moveTimer);
+
+                const pauseTimer = setTimeout(() => {
+                    stopActivePrintSound();
+                    strip.classList.remove('motor-active');
+                    badge.textContent = step.pauseText;
+                    playPauseDing(step.pitch);
+
+                    if (idx === printSteps.length - 1) {
+                        spawnParticles({ clientX: window.innerWidth / 2, clientY: 240 }, '💖🌷✨');
+                        spawnButterflyBurst({ clientX: window.innerWidth / 2, clientY: 220 });
+                    }
+                }, startAt + moveTime);
+                stageTimeouts.push(pauseTimer);
+            });
+        }
+
+        function restartPrintStrip() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                runStagedSlotPrint();
+            }, 220);
+        }
+
+        function toggleAudio() {
+            soundOn = !soundOn;
+            if (!soundOn) stopActivePrintSound();
+            const icon = soundOn ? '🔊' : '🔇';
+            const el1 = document.getElementById('audioIcon');
+            const el2 = document.getElementById('audioIconRecipient');
+            if (el1) el1.textContent = icon;
+            if (el2) el2.textContent = icon;
+        }
+
+        /* ================= PHOTO ZOOM LIGHTBOX FUNCTIONS ================= */
+        function openPhotoZoom(index, event) {
+            const item = appConfig.photos[index] || DEFAULT_CONFIG.photos[index];
+            if (!item) return;
+
+            document.getElementById('zoomModalImg').src = item.src;
+            document.getElementById('zoomModalCaption').textContent = item.caption || '';
+            document.getElementById('zoomModalNumber').textContent = `#0${index + 1}`;
+
+            const modal = document.getElementById('photoZoomModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            if (event) {
+                spawnParticles(event, '💖✨');
+            }
+        }
+
+        function closePhotoZoom() {
+            const modal = document.getElementById('photoZoomModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* ================= RECEIPT LETTER HANDWRITING ZOOM & PENCIL SOUND ================= */
+        let letterTypingTimer = null;
+
+        // Synthesize realistic graphite pencil scribbling/scratching sound on paper for each character
+        function playPencilStrokeSound(char) {
+            if (!soundOn || !char || char === ' ' || char === '\n') return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+                // Short 32ms-48ms graphite scratch burst
+                const strokeDur = 0.032 + Math.random() * 0.018;
+                const bufLen = Math.floor(audioCtx.sampleRate * strokeDur);
+                const buf = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
+                const data = buf.getChannelData(0);
+
+                // Quick double-scritch envelope like a pencil tip forming a letter
+                for (let i = 0; i < bufLen; i++) {
+                    const p = i / bufLen;
+                    const env = Math.sin(p * Math.PI) * (0.75 + 0.25 * Math.sin(p * Math.PI * 3));
+                    data[i] = (Math.random() * 2 - 1) * env;
+                }
+
+                const src = audioCtx.createBufferSource();
+                src.buffer = buf;
+
+                // Bandpass around 2400Hz - 3300Hz (paper + graphite friction frequency)
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(2500 + Math.random() * 800, now);
+                filter.Q.setValueAtTime(2.4, now);
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.055, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + strokeDur);
+
+                src.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                src.start(now);
+            } catch (e) {}
+        }
+
+        function stopLetterWriting() {
+            if (letterTypingTimer) {
+                clearTimeout(letterTypingTimer);
+                letterTypingTimer = null;
+            }
+        }
+
+        function openReceiptLetterModal(event) {
+            const modal = document.getElementById('receiptLetterModal');
+            document.getElementById('letterModalRecipient').textContent =
+                `UNTUK: ${(appConfig.recipient || 'KESAYANGANKU').toUpperCase()}`;
+            document.getElementById('letterModalDate').textContent = formatIndonesianDate();
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            if (event) {
+                spawnParticles(event, '💌✨');
+            }
+
+            startLetterHandwriting();
+        }
+
+        function replayLetterWriting() {
+            startLetterHandwriting();
+        }
+
+        function startLetterHandwriting() {
+            stopLetterWriting();
+
+            const textEl = document.getElementById('letterTypedText');
+            const cursorEl = document.getElementById('letterPencilCursor');
+            const sigEl = document.getElementById('letterSignatureRow');
+            const statusEl = document.getElementById('letterWritingStatus');
+
+            const fullText = appConfig.sweetNote || DEFAULT_CONFIG.sweetNote;
+            const chars = Array.from(fullText); // Properly handles emojis & surrogates
+
+            textEl.textContent = '';
+            cursorEl.classList.remove('hidden');
+            sigEl.classList.remove('opacity-100');
+            sigEl.classList.add('opacity-0');
+            statusEl.innerHTML = '<span>✏️</span><span>Menulis surat untukmu...</span>';
+
+            let idx = 0;
+
+            function writeNextChar() {
+                if (idx >= chars.length) {
+                    cursorEl.classList.add('hidden');
+                    sigEl.classList.remove('opacity-0');
+                    sigEl.classList.add('opacity-100');
+                    statusEl.innerHTML = '<span>💖</span><span>Selesai ditulis dengan penuh sayang</span>';
+                    spawnButterflyBurst({ clientX: window.innerWidth / 2, clientY: window.innerHeight * 0.55 });
+                    return;
+                }
+
+                const ch = chars[idx];
+                textEl.textContent += ch;
+                playPencilStrokeSound(ch);
+                idx++;
+
+                // Natural human handwriting cadence (pauses slightly on punctuation, faster on spaces)
+                let delay = 42 + Math.random() * 28;
+                if (ch === ' ') delay = 26;
+                else if (ch === ',' || ch === '!' || ch === '.' || ch === '?') delay = 190;
+
+                letterTypingTimer = setTimeout(writeNextChar, delay);
+            }
+
+            letterTypingTimer = setTimeout(writeNextChar, 260);
+        }
+
+        function closeReceiptLetterModal() {
+            stopLetterWriting();
+            const modal = document.getElementById('receiptLetterModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePhotoZoom();
+                closeReceiptLetterModal();
+                closeSettingsModal();
+            }
+        });
+
+        /* ================= SETTINGS MODAL FUNCTIONS ================= */
+        function openSettingsModal() {
+            document.getElementById('inputTitle').value = appConfig.title || '';
+            document.getElementById('inputRecipient').value = appConfig.recipient || '';
+            document.getElementById('inputShowReceipt').checked = !!appConfig.showReceipt;
+            document.getElementById('inputSweetNote').value = appConfig.sweetNote || '';
+
+            updatePhotoCountButtons(appConfig.photoCount);
+            renderPhotoEditors(appConfig.photoCount);
+
+            const modal = document.getElementById('settingsModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function setPhotoCount(count) {
+            syncCurrentPhotoEditorValues();
+            appConfig.photoCount = count;
+            updatePhotoCountButtons(count);
+            renderPhotoEditors(count);
+        }
+
+        function updatePhotoCountButtons(activeCount) {
+            document.querySelectorAll('#photoCountSelector .count-btn').forEach(btn => {
+                const c = parseInt(btn.dataset.count);
+                if (c === activeCount) {
+                    btn.className = 'count-btn py-2 rounded-xl border border-[#9e3547] bg-[#9e3547] text-white font-bold transition shadow-xs';
+                } else {
+                    btn.className = 'count-btn py-2 rounded-xl border border-pink-200 bg-white text-[#6e2332] hover:bg-pink-50 font-bold transition';
+                }
+            });
+        }
+
+        function syncCurrentPhotoEditorValues() {
+            document.querySelectorAll('.photo-caption-input').forEach(input => {
+                const idx = parseInt(input.dataset.index);
+                if (appConfig.photos[idx]) {
+                    appConfig.photos[idx].caption = input.value;
+                }
+            });
+        }
+
+        function renderPhotoEditors(count) {
+            const container = document.getElementById('photoInputsContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < count; i++) {
+                const photo = appConfig.photos[i] || DEFAULT_CONFIG.photos[i];
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-3 bg-white p-2.5 rounded-2xl border border-pink-200/90 shadow-2xs';
+                row.innerHTML = `
+                    <div class="relative w-14 h-16 rounded-xl overflow-hidden bg-pink-50 border border-pink-200 shrink-0 group cursor-pointer"
+                         onclick="triggerPhotoUpload(${i})" title="Klik untuk ganti foto #${i + 1}">
+                        <img id="previewThumb${i}" src="${photo.src}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition">
+                            Ganti
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-[11px] text-[#9e3547]">Foto #0${i + 1}</span>
+                            <button type="button" onclick="triggerPhotoUpload(${i})" class="text-[10px] font-bold text-[#9e3547] bg-pink-100 hover:bg-pink-200 px-2 py-0.5 rounded-md transition">
+                                📸 Pilih Foto
+                            </button>
+                        </div>
+                        <input type="text"
+                               data-index="${i}"
+                               value="${escapeHtml(photo.caption || '')}"
+                               placeholder="Tulis caption foto #0${i + 1}..."
+                               class="photo-caption-input w-full px-2.5 py-1.5 rounded-lg border border-pink-200 text-xs focus:outline-none focus:border-[#9e3547]">
+                    </div>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        // Compress & resize uploaded photo so it saves cleanly and exports lightweight HTML
+        function triggerPhotoUpload(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 720;
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) {
+                                h = Math.round(h * (maxDim / w));
+                                w = maxDim;
+                            } else {
+                                w = Math.round(w * (maxDim / h));
+                                h = maxDim;
+                            }
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+                        appConfig.photos[index].src = dataUrl;
+                        const thumb = document.getElementById(`previewThumb${index}`);
+                        if (thumb) thumb.src = dataUrl;
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        function collectModalSettings() {
+            syncCurrentPhotoEditorValues();
+            appConfig.title = document.getElementById('inputTitle').value.trim() || 'morning, Sayang';
+            appConfig.recipient = document.getElementById('inputRecipient').value.trim() || 'KESAYANGANKU';
+            appConfig.showReceipt = document.getElementById('inputShowReceipt').checked;
+            appConfig.sweetNote = document.getElementById('inputSweetNote').value.trim();
+
+            try {
+                localStorage.setItem('morning_photobox_config_v2', JSON.stringify(appConfig));
+            } catch (e) {}
+        }
+
+        function saveAndApplySettings() {
+            collectModalSettings();
+            renderStripItems();
+            closeSettingsModal();
+            showToast('Pengaturan disimpan! Mencetak ulang... ✨');
+            restartPrintStrip();
+        }
+
+        // Option 1: Copy Short Shareable Link (Creates a clean short URL!)
+        async function copyShareableGiftLink() {
+            collectModalSettings();
+            renderStripItems();
+
+            const btn = document.getElementById('copyShortLinkBtn');
+            const origText = btn ? btn.innerHTML : '🔗 Salin Link Pendek';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Membuat Link...';
+            }
+
+            const baseUrl = window.location.href.split('?')[0].split('#')[0];
+            let finalShareUrl = '';
+
+            try {
+                // 1. Try storing config in a short cloud ID so the link is super short (?k=xxx) even with custom photos!
+                const res = await fetch('https://jsonblob.com/api/jsonBlob', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(appConfig)
+                });
+
+                if (res.ok) {
+                    const loc = res.headers.get('Location') || res.headers.get('location') || '';
+                    const id = loc.split('/').pop();
+                    if (id) {
+                        finalShareUrl = `${baseUrl}?k=${id}`;
+                    }
+                }
+            } catch (e) {}
+
+            // 2. Fallback if offline or local file: build ultra-compact Delta URL
+            if (!finalShareUrl) {
+                const hasBase64Photo = appConfig.photos.slice(0, appConfig.photoCount).some(p => p.src.startsWith('data:'));
+                if (hasBase64Photo) {
+                    if (btn) { btn.disabled = false; btn.innerHTML = origText; }
+                    exportCleanGiftHtml();
+                    return;
+                }
+
+                const delta = buildDeltaConfig();
+                if (Object.keys(delta).length === 0) {
+                    finalShareUrl = `${baseUrl}?kado=1`;
+                } else {
+                    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(delta))));
+                    finalShareUrl = `${baseUrl}?kado=1#g=${encoded}`;
+                }
+
+                // Also try shortening via is.gd if it's a public http/https URL
+                if (finalShareUrl.startsWith('http') && !finalShareUrl.includes('localhost') && !finalShareUrl.includes('127.0.0.1')) {
+                    try {
+                        const shortRes = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(finalShareUrl)}`);
+                        if (shortRes.ok) {
+                            const data = await shortRes.json();
+                            if (data && data.shorturl) finalShareUrl = data.shorturl;
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origText;
+            }
+
+            navigator.clipboard.writeText(finalShareUrl).then(() => {
+                closeSettingsModal();
+                showToast('🔗 Link Pendek berhasil disalin! Siap dikirim ke dia 💖');
+            }).catch(() => {
+                prompt('Salin link pendek ini untuk dikirim ke dia:', finalShareUrl);
+            });
+        }
+
+        // Option 2: Export Clean Self-Contained Gift HTML File (Works 100% with custom uploaded photos via WhatsApp/Telegram!)
+        function exportCleanGiftHtml() {
+            collectModalSettings();
+            renderStripItems();
+
+            const rawHtml = document.documentElement.outerHTML;
+            const bakedJson = JSON.stringify(appConfig);
+            const cleanGiftHtml = '<!DOCTYPE html>\n' + rawHtml.replace(
+                /\/\*__BAKED_GIFT_CONFIG_START__\*\/[\s\S]*?\/\*__BAKED_GIFT_CONFIG_END__\*\//,
+                `/*__BAKED_GIFT_CONFIG_START__*/\n        const BAKED_GIFT_CONFIG = ${bakedJson};\n        /*__BAKED_GIFT_CONFIG_END__*/`
+            );
+
+            const blob = new Blob([cleanGiftHtml], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const safeName = (appConfig.recipient || 'sayang').toLowerCase().replace(/[^a-z0-9]/g, '-');
+            a.href = url;
+            a.download = `morning-photobox-${safeName}.html`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+
+            closeSettingsModal();
+            showToast('🎁 File Kado berhasil disimpan! Siap dikirim & tanpa tombol setting 💖');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotice');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3400);
+        }
+
+        function spawnParticles(event, symbols = '💖✨') {
+            const x = event.clientX || window.innerWidth / 2;
+            const y = event.clientY || window.innerHeight / 2;
+
+            for (let i = 0; i < 3; i++) {
+                const el = document.createElement('span');
+                el.className = 'love-particle text-lg sm:text-xl select-none';
+                el.textContent = symbols;
+                const dx = (Math.random() - 0.5) * 48;
+                const dy = (Math.random() - 0.5) * 20;
+                el.style.left = `${x + dx - 10}px`;
+                el.style.top = `${y + dy - 10}px`;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 950);
+            }
+        }
+
+        // Spawn 3D fluttering watercolor butterflies on click or when printing finishes!
+        function spawnButterflyBurst(event) {
+            const x = (event && event.clientX) || window.innerWidth / 2;
+            const y = (event && event.clientY) || window.innerHeight / 2;
+
+            spawnParticles({ clientX: x, clientY: y }, '✨🌸');
+
+            for (let i = 0; i < 3; i++) {
+                const wrap = document.createElement('div');
+                wrap.className = 'butterfly-stage fixed pointer-events-none z-[95] w-11 h-11';
+                const txMid = Math.round((Math.random() - 0.5) * 140);
+                const tyMid = Math.round(-50 - Math.random() * 65);
+                const txEnd = Math.round(txMid * 1.9 + (Math.random() - 0.5) * 50);
+                const tyEnd = Math.round(-140 - Math.random() * 90);
+                const rot = Math.round((Math.random() - 0.5) * 55);
+
+                wrap.style.left = `${x - 22}px`;
+                wrap.style.top = `${y - 22}px`;
+                wrap.style.setProperty('--tx-mid', `${txMid}px`);
+                wrap.style.setProperty('--ty-mid', `${tyMid}px`);
+                wrap.style.setProperty('--tx-end', `${txEnd}px`);
+                wrap.style.setProperty('--ty-end', `${tyEnd}px`);
+                wrap.style.setProperty('--burst-rot', `${rot}deg`);
+                wrap.style.setProperty('--flap-speed', `${0.22 + Math.random() * 0.12}s`);
+                wrap.style.animation = `butterflyBurstFly ${1.8 + Math.random() * 0.6}s ease-out forwards`;
+
+                wrap.innerHTML = `
+                    <div class="butterfly-3d">
+                        <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                            <g class="bf-wing-left"><use href="#watercolorWingLeft"/></g>
+                            <g class="bf-wing-right"><use href="#watercolorWingRight"/></g>
+                            <use href="#watercolorButterflyBody"/>
+                        </svg>
+                    </div>
+                `;
+                document.body.appendChild(wrap);
+                setTimeout(() => wrap.remove(), 2500);
+            }
+        }
+
+        let splashDismissed = false;
+        let splashAutoTimer = null;
+
+        function dismissSplashScreen() {
+            if (splashDismissed) return;
+            splashDismissed = true;
+
+            if (splashAutoTimer) {
+                clearTimeout(splashAutoTimer);
+                splashAutoTimer = null;
+            }
+
+            // Unlock Web Audio Context on user gesture so the "sreeettttt" sound works even on strict mobile browsers!
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            } catch (e) {}
+
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.classList.add('splash-hide');
+                spawnButterflyBurst({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 850);
+            }
+
+            // Start printing the photobox strip right as the splash screen fades out
+            setTimeout(() => {
+                runStagedSlotPrint();
+            }, 380);
+        }
+
+        function animateSplashHeading() {
+            const heading = document.getElementById('splashAnimatedHeading');
+            if (!heading) return;
+            const text = 'Special for you';
+            heading.innerHTML = '';
+
+            Array.from(text).forEach((ch, idx) => {
+                const span = document.createElement('span');
+                if (ch === ' ') {
+                    span.innerHTML = '&nbsp;';
+                    span.className = 'inline-block w-3 sm:w-4';
+                } else {
+                    span.textContent = ch;
+                    span.className = 'splash-char';
+                    span.style.animationDelay = `${0.25 + idx * 0.085}s`;
+                }
+                heading.appendChild(span);
+            });
+        }
+
+        window.onload = async function() {
+            await loadInitialState();
+            applyModeVisibility();
+            renderStripItems();
+            animateSplashHeading();
+
+            // Update recipient subtitle on the Splash Screen
+            const splashSub = document.getElementById('splashRecipientText');
+            if (splashSub && appConfig.recipient) {
+                splashSub.textContent = `Untuk ${appConfig.recipient} ❤️`;
+            }
+
+            // Automatically transition from Splash Screen right after the "Special for you" writing animation finishes!
+            splashAutoTimer = setTimeout(() => {
+                dismissSplashScreen();
+            }, 3100);
+        };
+    </script>
+</body>
+</html>
